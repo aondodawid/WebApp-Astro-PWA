@@ -1,0 +1,113 @@
+{
+  "isInstallBtnVisible": true,
+  "createManifest": true,
+  "cacheAssets": "static-assets81",
+  "disableDevLogs": true,
+  "isManifest": true,
+  "manifestPath": "manifest.json",
+  "strategy": "CacheFirst",
+  "manifest": {
+    "name": "My PWA Example",
+    "short_name": "PWAExample",
+    "description": "A simple Progressive Web App example.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "dir": "auto",
+    "lang": "en-US",
+    "theme_color": "#8936FF",
+    "background_color": "#2EC6FE",
+    "icons": [
+      {
+        "sizes": "512x512",
+        "src": "node_modules/my-new-component-directory-astro/src/manifest_imgs/icon512x512.png",
+        "type": "image/png"
+      },
+      {
+        "sizes": "192x192",
+        "src": "node_modules/my-new-component-directory-astro/src/manifest_imgs/icon192x192.png",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "node_modules/my-new-component-directory-astro/src/manifest_imgs/app_screenshot.png",
+        "sizes": "1934x958",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label": "Home screen showing main navigation and featured content"
+      },
+      {
+        "src": "node_modules/my-new-component-directory-astro/src/manifest_imgs/app_screenshot_mobile.png",
+        "sizes": "358x577",
+        "type": "image/png",
+        "label": "Home screen showing main navigation and featured content at mobile devices"
+      }
+    ]
+  },
+  "icons": [
+    {
+      "rel": "icon",
+      "type": "png",
+      "sizes": "512x512",
+      "href": "/integrations/test/manifest_imgs/icon512x512.png"
+    },
+    {
+      "rel": "apple-touch-icon",
+      "type": "png",
+      "sizes": "192x192",
+      "href": "/integrations/test/manifest_imgs/icon512x512.png"
+    },
+    {
+      "rel": "icon",
+      "type": "png",
+      "sizes": "512x512",
+      "href": "/integrations/test/manifest_imgs/icon512x512.png"
+    },
+    {
+      "rel": "apple-touch-icon",
+      "type": "png",
+      "sizes": "192x192",
+      "href": "/integrations/test/manifest_imgs/icon512x512.png"
+    }
+  ],
+  "meta": [
+    {
+      "name": "mobile-web-app-capable",
+      "content": "yes"
+    },
+    {
+      "name": "apple-mobile-web-app-capable",
+      "content": "yes"
+    },
+    {
+      "name": "application-name",
+      "content": "AntoninaApp"
+    },
+    {
+      "name": "apple-mobile-web-app-title",
+      "content": "AntoninaApp"
+    },
+    {
+      "name": "theme-color",
+      "content": "#8936FF"
+    },
+    {
+      "name": "msapplication-navbutton-color",
+      "content": "#8936FF"
+    },
+    {
+      "name": "apple-mobile-web-app-status-bar-style",
+      "content": "black-translucent"
+    },
+    {
+      "name": "viewport",
+      "content": "width=device-width, initial-scale=1, shrink-to-fit=no"
+    },
+    {
+      "name": "msapplication-starturla",
+      "content": "/"
+    }
+  ]
+}

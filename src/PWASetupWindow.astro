@@ -1,0 +1,95 @@
+---
+import InstallationMessage from "./view/components/InstallationMessage.astro";
+import InstallationPage from "./view/components/InstallationPage.astro";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  btnText?: string;
+  btnBackground?: string;
+  background?: string;
+  hideSvg?: boolean;
+}
+
+const { title, description, btnText, btnBackground, background, hideSvg } = Astro.props;
+
+---
+
+<script>
+  import checkIsPopoverSupport from "./view/PopoverSupport";
+  import pwaSettings from "../pwa.config.json";
+  import runPWASetup from "./view/utils/PWASetup";
+  const isShowBtn = pwaSettings.isInstallBtnVisible && pwaSettings.isManifest ;
+
+
+
+  checkIsPopoverSupport();
+
+  runPWASetup(isShowBtn);
+</script>
+<div id="mypopover" popover="manual" style={{background: background }}>
+  <div
+    id="installation-message"
+    style="display: none;"
+    class="bg-brand-primary"
+  >
+    <InstallationMessage />
+  </div>
+  <div id="installation-page" style="display: none;">
+    <InstallationPage title={title} description={description} btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg}/>
+  </div>
+</div>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  #mypopover:popover-open {
+    border-radius: 16px;
+    max-width: 400px;
+    width: 90%;
+    padding: 24px;
+  }
+
+  /* Gray overlay behind popover */
+  #mypopover::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Container styling */
+  #installation-message,
+  #installation-page {
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  #installation-message p {
+    margin: 16px 0;
+    font-size: 16px;
+  }
+
+  #installation-page button {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  #installation-page button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 97, 238, 0.3);
+  }
+</style>

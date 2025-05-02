@@ -1,0 +1,11 @@
+---
+import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
+import ServiceWorkerRegistration from "./view/components/ServiceWorkerRegistration.astro";
+
+import pwaOptions from "../pwa.config.json";
+
+const isShowManifest = pwaOptions.isManifest;
+---
+
+{isShowManifest && <MetaServiceWorker />}
+<ServiceWorkerRegistration />

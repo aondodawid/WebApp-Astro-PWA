@@ -1,0 +1,53 @@
+---
+import InstallBtn from './InstallBtn.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  btnText?: string;
+  btnBackground?: string;
+  hideSvg?: boolean;
+}
+
+const { title, description, btnText, btnBackground,hideSvg } = Astro.props;
+---
+
+<div class="installation-page-container" >
+  <h2>{title ?? "Ready to install?"}</h2>
+  <p>
+    {description ?? "Click the button below to install the app on your device."}
+  </p>
+  <InstallBtn btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg} />
+</div>
+
+<style>
+
+  .installation-page-container {
+    text-align: center;
+    padding: 20px 0;
+    max-width: 450px;
+    box-sizing: border-box;
+
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin-bottom: 16px;
+    color: #2b2d42;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 28px;
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 1.6rem;
+    }
+  }
+</style>

@@ -1,0 +1,143 @@
+<div class="installation-message-container">
+  <div class="message-header">
+
+    <h2>Install the app</h2>
+  </div>
+
+  <p class="intro-text">To install this app on your device:</p>
+
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-icon">1</div>
+      <div class="step-text">
+        Use the "Install" or "Add to Home Screen" option in your browser menu
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-icon">2</div>
+      <div class="step-text">
+        Or switch to a browser that supports PWA apps (e.g. Chrome, Edge, Safari)
+      </div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-icon">3</div>
+    <div class="step-text">
+      Learn more at: <a style="color: #000" href="https://web.dev/learn/pwa/installation">https://web.dev/learn/pwa/installation</a>
+    </div>
+  </div>
+</div>
+
+  <div class="benefits">
+    <p>
+      The installed app will work faster and you will have direct access to it from your home screen.
+    </p>
+  </div>
+</div>
+
+<style>
+  .installation-message-container {
+    text-align: center;
+    padding: 10px;
+    max-width: 450px;
+    margin: 0 auto;
+    color: #333;
+  }
+
+  .message-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .app-icon {
+    color: #4361ee;
+  }
+
+  h2 {
+    margin: 0;
+    color: #2b2d42;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 25px;
+  }
+
+  .steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+    background-color: #f9f9fe;
+    border-radius: 12px;
+    padding: 14px;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+    border: 1px solid #e8e8ff;
+  }
+
+  .step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 97, 238, 0.1);
+  }
+
+  .step-icon {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-right: 14px;
+    font-size: 14px;
+  }
+
+  .step-text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .benefits {
+    margin-top: 22px;
+    padding: 15px;
+    background-color: #eef2ff;
+    border-radius: 10px;
+  }
+
+  .benefits p {
+    margin: 0;
+    font-size: 1rem;
+    color: #444;
+  }
+
+  @media (max-width: 480px) {
+    .step {
+      padding: 12px;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    .step-icon {
+      margin-right: 10px;
+    }
+  }
+</style>

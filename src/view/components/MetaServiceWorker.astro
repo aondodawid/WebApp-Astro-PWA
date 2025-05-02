@@ -1,0 +1,11 @@
+---
+import pwaSettings from "../../../pwa.config.json";
+---
+
+<link rel="manifest" href="./manifest.json" />
+{pwaSettings.meta && pwaSettings.meta.map((el : any) => <meta name={el.name} content={el.content} />)}
+{pwaSettings.icons &&
+  pwaSettings.icons.map((icon : any) => (
+    <link rel={icon.rel} type={icon.type} sizes={icon.sizes} href={icon.href} />
+  ))
+}
