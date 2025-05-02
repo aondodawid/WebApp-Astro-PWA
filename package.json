@@ -1,20 +1,33 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.0.1",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.ts",
+    "./pwa": "./src/pwa/index.ts"
   },
   "files": [
     "src",
-    "index.ts"
+    "index.ts",
+    "setup.js",
+    "pwa.config.json"
   ],
   "keywords": [
     "astro-component"
   ],
-  "scripts": {},
+  "scripts": {
+    "postinstall": "node setup.js"
+  },
   "devDependencies": {
+    "@types/node": "^22.15.3",
     "astro": "^5.7.10"
+  },
+  "dependencies": {
+    "workbox-cli": "^7.3.0",
+    "workbox-navigation-preload": "^7.3.0",
+    "workbox-precaching": "^7.3.0",
+    "workbox-recipes": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0"
   },
   "peerDependencies": {
     "astro": "^4.0.0 || ^5.0.0"
