@@ -1,5 +1,6 @@
 {
   "name": "webapp-astro-pwa",
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     ".": "./index.ts",
@@ -12,7 +13,22 @@
     "pwa.config.json"
   ],
   "keywords": [
-    "astro-component"
+    "astro",
+    "astro-component",
+    "astro-integration",
+    "pwa",
+    "progressive-web-app",
+    "service-worker",
+    "manifest",
+    "web-app",
+    "install-pwa",
+    "workbox",
+    "offline",
+    "webapp",
+    "pwa-install",
+    "astro-pwa",
+    "astro-plugin",
+    "astro-library"
   ],
   "scripts": {
     "postinstall": "node setup.js"
