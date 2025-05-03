@@ -1,6 +1,7 @@
 import type { Config } from "../types";
 import fs from "fs";
 import {
+  checkIsFileExistsInRoot,
   generateManifestFile,
   runShellCommand,
   getConfigJSON,
@@ -8,7 +9,6 @@ import {
   updatePWAConfig,
   getPWAConfigPathFromGrandparent,
 } from "./utilities";
-
 
 /**
  * @param config - The configuration object to apply.
@@ -23,11 +23,26 @@ import {
  * - If the config file does not exist, returns the provided config {@link updatePWAConfig}.
  */
 function applyConfigurationsToFile(config: Config): Config {
-  console.log("run")
   const PWAConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
+  console.log(
+    "🚀 ~ applyConfigurationsToFile ~ PWAConfigFilePath:",
+    PWAConfigFilePath,
+  );
 
   if (PWAConfigFilePath && fs.existsSync(PWAConfigFilePath)) {
     const pwaConfigJSON = getConfigJSON(PWAConfigFilePath);
+
+    const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
+    console.log(
+      "🚀 ~ applyConfigurationsToFile ~ isSWFileExists:",
+      isSWFileExists,
+    );
+
+    if (!isSWFileExists) {
+      runShellCommand("npm run generateAndBundleSW");
+
+      return pwaConfigJSON;
+    }
     const isFileChanged: boolean = checkIsPWAConfigChanged(
       config,
       pwaConfigJSON,

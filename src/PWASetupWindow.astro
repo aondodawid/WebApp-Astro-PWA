@@ -19,7 +19,8 @@ const { title, description, btnText, btnBackground, background, hideSvg } = Astr
   import checkIsPopoverSupport from "./view/PopoverSupport";
   import pwaSettings from "../pwa.config.json";
   import runPWASetup from "./view/utils/PWASetup";
-  const isShowBtn = pwaSettings.isInstallBtnVisible && pwaSettings.isManifest ;
+
+  const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings as any)?.isManifest || false;
 
 
 

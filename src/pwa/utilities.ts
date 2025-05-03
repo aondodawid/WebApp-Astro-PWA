@@ -129,7 +129,20 @@ function generateManifestFile(config: Config) {
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 }
 
+/**
+ * Checks if a file exists in the root directory of the project.
+ * @param filePath - The relative path to the file from the root directory.
+ * @returns True if the file exists, false otherwise.
+ */
+
+function checkIsFileExistsInRoot(filePath: string): boolean {
+  const rootPath = process.cwd();
+  const path = rootPath + "/" + filePath;
+  return fs.existsSync(path);
+}
+
 export {
+  checkIsFileExistsInRoot,
   getPWAConfigPathFromGrandparent,
   runShellCommand,
   getConfigJSON,

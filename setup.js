@@ -1,4 +1,3 @@
-import { exec } from "child_process";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
