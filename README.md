@@ -156,6 +156,9 @@ export default defineConfig({
 
 ## 🧨 Usage AS PWA
 
+**Important:**
+When your application is running as a PWA, you may sometimes need to remove and re-add the service worker file (`sw.js`) for changes to take effect. Browsers aggressively cache service workers, so after making updates to your service worker or its configuration, clear the old service worker or unregister it to ensure users receive the latest version.
+
 ### ⚡️ External Options
 
 #### Choose Strategy

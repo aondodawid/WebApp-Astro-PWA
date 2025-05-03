@@ -7,7 +7,7 @@ export type PWAInstallPromptType = {
   checkIsPWAInstalled(): boolean;
   installPWABtnHandler(): Promise<void>;
   beforeInstallHandler(event: Event, btn: HTMLElement): void;
-  runEvents(isPopup: boolean, popup?: HTMLElement ): void;
+  runEvents(isPopup: boolean, popup?: HTMLElement): void;
 };
 
 export type IMetaItem = {
@@ -44,6 +44,7 @@ export type PWAIcon = {
 
 export type Config =
   | {
+      forceUpdate?: boolean;
       scripts?: string[];
       isSetupPageEnabled?: boolean;
       createManifest?: boolean;

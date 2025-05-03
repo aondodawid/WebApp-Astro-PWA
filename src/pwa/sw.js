@@ -16,6 +16,8 @@ const STRATEGY = SETTINGS.strategy;
 const CACHE_ASSETS = SETTINGS.cacheAssets;
 const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
 const scripts = SETTINGS.scripts;
+const forceUpdate = SETTINGS.forceUpdate;
+
 
 if (scripts.lenhth > 0) {
   scripts.forEach(function (script) {
@@ -98,3 +100,14 @@ const googleFontsRoute = new Route(
 );
 
 registerRoute(googleFontsRoute);
+
+
+if(forceUpdate) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const registration of registrations) {
+        registration.update(); // Forces the browser to check for an updated sw.js
+      }
+    });
+  }
+}
