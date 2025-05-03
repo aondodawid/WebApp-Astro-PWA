@@ -12,7 +12,7 @@ import fs from "fs";
  * @param {string} scriptValue - The command that the script should run.
  */
 
-async function addScriptsToPackageJson(scriptName, scriptValue) {
+export function addScriptsToPackageJson(scriptName, scriptValue) {
   // Get the path to the user's package.json (one level up from node_modules)
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const userPackageJsonPath = path.join(__dirname, "..", "..", "package.json");

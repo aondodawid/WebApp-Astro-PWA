@@ -9,6 +9,7 @@ import {
   updatePWAConfig,
   getPWAConfigPathFromGrandparent,
 } from "./utilities";
+// @ts-ignore
 
 /**
  * @param config - The configuration object to apply.
@@ -23,30 +24,20 @@ import {
  * - If the config file does not exist, returns the provided config {@link updatePWAConfig}.
  */
 function applyConfigurationsToFile(config: Config): Config {
-  console.log("🚀 ~ applyConfigurationsToFile ~ config:", config);
   const PWAConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
-  console.log(
-    "🚀 ~ applyConfigurationsToFile ~ PWAConfigFilePath:",
-    PWAConfigFilePath,
-  );
-
   if (PWAConfigFilePath && fs.existsSync(PWAConfigFilePath)) {
     const pwaConfigJSON = getConfigJSON(PWAConfigFilePath);
 
-    const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
+    // const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
 
-    if (!isSWFileExists) {
-      runShellCommand("npm run generateAndBundleSW");
+    // if (!isSWFileExists) {
+    //   runShellCommand("npm run generateAndBundleSW");
 
-      return pwaConfigJSON;
-    }
+    //   return pwaConfigJSON;
+    // }
     const isFileChanged: boolean = checkIsPWAConfigChanged(
       config,
       pwaConfigJSON,
-    );
-    console.log(
-      "🚀 ~ applyConfigurationsToFile ~ isFileChanged:",
-      isFileChanged,
     );
     if (!isFileChanged) return pwaConfigJSON;
     const finalConfigJSON = updatePWAConfig(pwaConfigJSON, config);
@@ -78,15 +69,9 @@ export default function PoweredWebAppBuilder(config: Config) {
   return {
     name: "astro-hello",
     hooks: {
-      "astro:config:setup": async () => {
-        const configurationObject = await applyConfigurationsToFile(config);
-        console.log(
-          "🚀 ~ PoweredWebAppBuilder ~ configurationObject:",
-          configurationObject,
-        );
-
+      "astro:config:setup": () => {
+        const configurationObject =  applyConfigurationsToFile(config);
         runShellCommand("npm run generateAndBundleSW");
-
         if (config?.createManifest) {
           generateManifestFile(config);
         }

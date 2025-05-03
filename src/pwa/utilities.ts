@@ -22,7 +22,7 @@ function getPWAConfigPathFromGrandparent(fileName: string): string | undefined {
  * @param command - The shell command to execute.
  */
 function runShellCommand(command: string) {
-  exec(command, (error, stdout, stderr) => {
+  exec(command, (error: any, stdout: any, stderr: any) => {
     if (error) {
       console.error(`Error: ${error.message}`);
       return;
@@ -52,31 +52,25 @@ function getConfigJSON(filePath: string) {
  * @returns The updated configuration object.
  */
 function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
-  const pwa = pwaConfigJSON;
   if (!config) return pwaConfigJSON;
-  switch (true) {
-    case config.isInstallBtnVisible !== undefined:
-      pwa.isInstallBtnVisible = config.isInstallBtnVisible;
-    case config.disableDevLogs !== undefined:
-      pwa.disableDevLogs = config.disableDevLogs;
-    case config.createManifest !== undefined:
-      pwa.createManifest = config.createManifest;
-    case config.manifestPath !== undefined:
-      pwa.manifestPath = config.manifestPath;
-    case config.cacheAssets !== undefined:
-      pwa.cacheAssets = config.cacheAssets;
-    case config.isManifest !== undefined:
-      pwa.isManifest = config.isManifest;
-    case config.manifest !== undefined:
-      pwa.manifest = config.manifest;
-    case config.strategy !== undefined:
-      pwa.strategy = config.strategy;
-    case config.icons !== undefined:
-      pwa.icons = config.icons;
-    case config.meta !== undefined:
-      pwa.meta = config.meta;
-    default:
-      break;
+  const pwa = { ...pwaConfigJSON };
+  const allowedKeys = [
+    "isInstallBtnVisible",
+    "createManifest",
+    "disableDevLogs",
+    "manifestPath",
+    "cacheAssets",
+    "isManifest",
+    "manifest",
+    "strategy",
+    "icons",
+    "meta",
+  ];
+
+  for (const key of allowedKeys) {
+    if (Object.prototype.hasOwnProperty.call(config, key)) {
+      pwa[key] = config[key as keyof Config];
+    }
   }
   return pwa;
 }
