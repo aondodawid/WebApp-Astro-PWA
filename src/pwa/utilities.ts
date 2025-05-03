@@ -28,7 +28,7 @@ function runShellCommand(command: string) {
       return;
     }
     if (stderr) {
-      console.error(`stderr: ${stderr}`);
+      // console.error(`stderr: ${stderr}`);
     }
     console.log(`stdout: ${stdout}`);
   });

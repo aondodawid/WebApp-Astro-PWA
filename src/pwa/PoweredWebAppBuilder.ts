@@ -28,13 +28,13 @@ function applyConfigurationsToFile(config: Config): Config {
   if (PWAConfigFilePath && fs.existsSync(PWAConfigFilePath)) {
     const pwaConfigJSON = getConfigJSON(PWAConfigFilePath);
 
-    // const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
+    const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
 
-    // if (!isSWFileExists) {
-    //   runShellCommand("npm run generateAndBundleSW");
+    if (!isSWFileExists) {
+      runShellCommand("npm run generateAndBundleSW");
 
-    //   return pwaConfigJSON;
-    // }
+      return pwaConfigJSON;
+    }
     const isFileChanged: boolean = checkIsPWAConfigChanged(
       config,
       pwaConfigJSON,
@@ -49,6 +49,7 @@ function applyConfigurationsToFile(config: Config): Config {
         JSON.stringify(finalConfigJSON, null, 2),
       );
     }
+    runShellCommand("npm run generateAndBundleSW");
     return finalConfigJSON;
   }
   return config;
@@ -70,8 +71,7 @@ export default function PoweredWebAppBuilder(config: Config) {
     name: "astro-hello",
     hooks: {
       "astro:config:setup": () => {
-        const configurationObject =  applyConfigurationsToFile(config);
-        runShellCommand("npm run generateAndBundleSW");
+        applyConfigurationsToFile(config);
         if (config?.createManifest) {
           generateManifestFile(config);
         }
