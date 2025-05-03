@@ -31,10 +31,7 @@ class EventHandler {
     if (!target.closest("#install") || installContainer?.id !== "install")
       return;
     const response = this.pwaObject.installPWABtnHandler();
-    console.log(
-      "🚀 ~ EventHandler ~ handleClickEventPWA= ~ response:",
-      response,
-    );
+
   };
 
   runEventHandler() {

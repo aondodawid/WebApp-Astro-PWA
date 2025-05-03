@@ -62,10 +62,10 @@ class PWAInstallPrompt {
       return;
     }
     const result = await this.installPrompt.prompt();
-    console.log(
-      "🚀 ~ PWAInstallPrompt ~ installPWABtnHandler= ~ result:",
-      result,
-    );
+    if (result === "dismissed" || result === "accepted") {
+      const installButton: HTMLElement | null = this.btn;
+      installButton?.parentNode?.removeChild(installButton);
+    }
     console.log(`Install prompt was: ${result.outcome}`);
   };
 

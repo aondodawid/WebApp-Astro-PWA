@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.2.14",
+  "version": "0.2.16",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -10,7 +10,7 @@
   "author": "Dawid Aondo-Akaa <aondo1@gmail.com> ",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aondodawid/WebApp-Astro-PWA"
+    "url": "git+https://github.com/aondodawid/WebApp-Astro-PWA.git"
   },
   "files": [
     "src",
@@ -40,7 +40,13 @@
     "postinstall": "node setup.js"
   },
   "devDependencies": {
+    "@types/estree": "^1.0.7",
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/nlcst": "^2.0.3",
     "@types/node": "^22.15.3",
+    "@types/trusted-types": "^2.0.7",
+    "@types/unist": "^3.0.3",
     "astro": "^5.7.10"
   },
   "dependencies": {

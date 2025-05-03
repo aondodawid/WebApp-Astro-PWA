@@ -1,6 +1,6 @@
 # WebApp Astro PWA
 
-A ready-to-use Astro component library for adding Progressive Web App (PWA) support to your Astro projects. This package provides drop-in components and utilities for manifest injection, service worker registration, install prompts, and more.
+A ready-to-use Astro component library for adding Progressive Web App (PWA) support to your Astro projects. This package provides drop-in components and utilities for manifest injection, service worker registration, install prompts, and more. Fully support Astro 4
 
 ---
 
@@ -108,6 +108,7 @@ import { PWA } from "webapp-astro-pwa";
 Next Open your `astro.config.mjs` (or `astro.config.ts`) at your astro project and add the following
 
 ```js
+// filepath: astro.config.mjs
 import { defineConfig } from "astro/config";
 // new code added
 import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
@@ -116,6 +117,7 @@ export default defineConfig({
   integrations: [
     // new code added
     PoweredWebAppBuilder({}),
+    ...
   ],
 });
 ```
@@ -136,6 +138,7 @@ This will generate the service worker file at
 enabling your app to function as a web app with offline capabilities (even if it’s not yet installable as a PWA still you don't have manifest file). By default, files will be stored in the browser’s Cache Storage under the name static-assets. You can change this name in the configuration to manage cache versions and control how assets are cached and updated. This approach gives you flexibility and full control over your app’s offline experience.
 
 ```js
+// filepath: astro.config.mjs
 import { defineConfig } from 'astro/config';
 // new code added
 import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
@@ -143,14 +146,252 @@ import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
 export default defineConfig({
   integrations: [
     // this line changed
-    "cacheAssets": "static-assets_v2",
+    PoweredWebAppBuilder({
+      "cacheAssets": "static-assets_v2",
+    }),
+    ...
   ]
 });
 ```
 
 ## 🧨 Usage AS PWA
 
-### 1. Add the PWA Components
+### ⚡️ External Options
+
+#### Choose Strategy
+
+You can also choose a file fetching strategy for your PWA. Available options are: `CacheFirst`, `CacheOnly`, `NetworkFirst`, `NetworkOnly`, and `StaleWhileRevalidate` (the default is `StaleWhileRevalidate`).
+For more details about these strategies, see the [Workbox documentation](https://developer.chrome.com/docs/workbox/modules/workbox-strategies).
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from 'astro/config';
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    // this line changed
+    PoweredWebAppBuilder({
+      "strategy": "CacheFirst",
+    }),
+    ...
+  ]
+});
+```
+
+#### Enable Workbox logs
+
+- `"disableDevLogs": true` — enables or disables Workbox logs in the console. Set to `true` to turn off Workbox logging, or `false` to see Workbox logs during development. Default `true`
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from 'astro/config';
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    // this line changed
+    PoweredWebAppBuilder({
+      "disableDevLogs": false,
+    }),
+    ...
+  ]
+});
+```
+
+### 🟣 Minimal Requirements for PWA in Astro
+
+To make your Astro project installable as a Progressive Web App (PWA) and automatically generate a manifest file during build, update your `astro.config.mjs` (or `astro.config.ts`) as follows:
+
+#### 1. Set the Required Options
+
+- `isManifest: true` — ensures the manifest is used.
+- `createManifest: true` — instructs the builder to generate the manifest file.
+- `manifestPath: "manifest.json"` — specifies the path where the manifest will be created.
+- `manifest` — the basic manifest info.
+- `icons` —table of icons for add to component in head.
+
+#### 2. Add Basic settings
+
+Add the following to your configuration for minimal PWA support:
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from "astro/config";
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    PoweredWebAppBuilder({
+      isManifest: true,
+      createManifest: true,
+      manifestPath: "manifest.json",
+      manifest: {
+        name: "My PWA Example",
+        short_name: "PWAExample",
+        description: "A simple Progressive Web App example.",
+        start_url: "/",
+        display: "standalone",
+        theme_color: "#8936FF",
+        icons: [
+          {
+            sizes: "512x512",
+            src: "node_modules/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+            type: "image/png",
+          },
+          {
+            sizes: "192x192",
+            src: "node_modules/webapp-astro-pwa/src/manifest_imgs/icon192x192.png",
+            type: "image/png",
+          },
+        ],
+      },
+      icons: [
+        {
+          rel: "icon",
+          type: "png",
+          sizes: "512x512",
+          href: "/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+        },
+        {
+          rel: "apple-touch-icon",
+          type: "png",
+          sizes: "192x192",
+          href: "/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+        },
+      ],
+    }),
+  ],
+});
+```
+
+##### What this does
+
+- **Enables installation** of your app as a PWA on supported devices.
+- **Automatically generates** the manifest file at the specified path after building your project.
+- \*\*Injects basic manifest and icons.
+
+After updating your configuration, rebuild your application. The manifest file will be created automatically, and your app will be ready for installation as a PWA.
+
+#### 3. Extend with Meta Information
+
+For a complete PWA experience and optimal support on all platforms, add the following meta tags to your configuration. These tags improve installability, appearance, and integration on both Android and iOS devices:
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from "astro/config";
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    PoweredWebAppBuilder({
+      isManifest: true,
+      createManifest: true,
+      manifestPath: "manifest.json",
+      manifest: {
+        name: "My PWA Example",
+        short_name: "PWAExample",
+        description: "A simple Progressive Web App example.",
+        start_url: "/",
+        display: "standalone",
+        theme_color: "#8936FF",
+        icons: [
+          {
+            sizes: "512x512",
+            src: "node_modules/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+            type: "image/png",
+          },
+          {
+            sizes: "192x192",
+            src: "node_modules/webapp-astro-pwa/src/manifest_imgs/icon192x192.png",
+            type: "image/png",
+          },
+        ],
+      },
+      icons: [
+        {
+          rel: "icon",
+          type: "png",
+          sizes: "512x512",
+          href: "/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+        },
+        {
+          rel: "apple-touch-icon",
+          type: "png",
+          sizes: "192x192",
+          href: "/webapp-astro-pwa/src/manifest_imgs/icon512x512.png",
+        },
+      ],
+      // ...table with mete information ...
+      meta: [
+        {
+          name: "mobile-web-app-capable",
+          content: "yes",
+        },
+        {
+          name: "apple-mobile-web-app-capable",
+          content: "yes",
+        },
+        {
+          name: "application-name",
+          content: "PWAExample",
+        },
+        {
+          name: "apple-mobile-web-app-title",
+          content: "PWAExample",
+        },
+        {
+          name: "theme-color",
+          content: "#8936FF",
+        },
+        {
+          name: "msapplication-navbutton-color",
+          content: "#8936FF",
+        },
+        {
+          name: "apple-mobile-web-app-status-bar-style",
+          content: "black-translucent",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1, shrink-to-fit=no",
+        },
+        {
+          name: "msapplication-starturla",
+          content: "/",
+        },
+      ],
+    }),
+  ],
+});
+```
+
+### 🛎️ Additional Install Button
+
+To enable extra installation prompts, add the following to your configuration:
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from 'astro/config';
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    // this line changed
+    PoweredWebAppBuilder({
+      "isInstallBtnVisible": true,
+    }),
+    ...
+  ]
+});
+```
+
+There are two options for displaying the install prompt:
+
+Popup Modal: Use <PWASetupWindow /> to show a modal that blocks the page until the user interacts with the install prompt.
+Simple Button: Use <PWABtn /> to add a standalone install button anywhere in your app.
+
+Note: Not all browsers support the PWA install prompt. For unsupported browsers, a notification will be shown with instructions to install the PWA using the standard browser menu.
 
 Import and use the main components in your Astro pages/layouts:
 
@@ -176,7 +417,7 @@ Or, for a simple install button:
 <PWABtn btnText="Install App" btnBackground="#3a0ca3" hideSvg={false} />
 ```
 
-### 2. Configure Your PWA
+### Configure Your PWA
 
 Edit [`pwa.config.json`](pwa.config.json) at the root of your project to customize manifest, icons, meta tags, caching strategy, and more.
 
@@ -210,7 +451,6 @@ Example:
 - [`PWA`](src/PWA.astro): Injects manifest/meta and registers the service worker.
 - [`PWABtn`](src/PWABtn.astro): Standalone install button.
 - [`PWASetupWindow`](src/PWASetupWindow.astro): Full install popover with customizable UI.
-- [`InstallBtn`](src/view/components/InstallBtn.astro): The install button UI.
 
 ---
 
