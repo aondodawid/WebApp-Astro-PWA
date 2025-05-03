@@ -199,6 +199,42 @@ export default defineConfig({
 });
 ```
 
+#### Adding Custom Scripts to the Service Worker
+
+You can extend your service worker with additional custom scripts using the `scripts` option in your `astro.config.mjs` (or `astro.config.ts`). This allows you to modularize your service worker logic—for example, to add push notifications, analytics, or custom caching strategies—by importing extra files via `importScripts`.
+
+##### How to Use
+
+Add a `scripts` array to your `PoweredWebAppBuilder` configuration. Each entry should be a path (relative to your project root or `public/`) to a JavaScript file you want to include in the service worker.
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from "astro/config";
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    PoweredWebAppBuilder({
+      // ...other options...
+      scripts: ["./src/pwa/custom-sw-script.js", "./src/pwa/analytics-sw.js"],
+    }),
+  ],
+});
+```
+
+All scripts listed will be injected at the top of your generated `sw.js` using `importScripts`:
+
+```js
+// In the generated sw.js
+importScripts("./src/pwa/custom-sw-script.js", "./src/pwa/analytics-sw.js");
+// ...rest of the service worker code...
+```
+
+**Tip:**
+Use this feature to keep your service worker code clean and maintainable by splitting advanced logic into separate files.
+
+---
+
 ### 🟣 Minimal Requirements for PWA in Astro
 
 To make your Astro project installable as a Progressive Web App (PWA) and automatically generate a manifest file during build, update your `astro.config.mjs` (or `astro.config.ts`) as follows:
@@ -481,6 +517,8 @@ MIT
 ## 🙋‍♂️ Contributing
 
 Feel free to open issues or PRs for improvements and bug fixes.
+
+- [GitHub](https://github.com/aondodawid/WebApp-Astro-PWA)
 
 ---
 

@@ -1,12 +1,12 @@
 import config from "../../pwa.config.json" with { type: "json" };
 import * as esbuild from "esbuild";
 
-
 const globPath = "src/pwa";
 const settings = {
-  strategy: config.strategy ,
-  cacheAssets: config.cacheAssets ,
-  disableDevLogs: config.disableDevLogs ,
+  strategy: config.strategy,
+  cacheAssets: config.cacheAssets,
+  disableDevLogs: config.disableDevLogs,
+  scripts: config.scripts,
 };
 
 await esbuild.build({

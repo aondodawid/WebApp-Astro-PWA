@@ -9,28 +9,22 @@ import {
   StaleWhileRevalidate,
   CacheFirst,
 } from "workbox-strategies";
-cleanupOutdatedCaches();
-googleFontsCache();
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) =>
-        Promise.all(
-          cacheNames
-            .filter((cacheName) => ![CACHE_ASSETS].includes(cacheName))
-            .map((cacheName) => caches.delete(cacheName)),
-        ),
-      ),
-  );
-});
 
 const SETTINGS = process.env.settings;
 console.log("🚀 ~ SETTINGS:", SETTINGS);
 const STRATEGY = SETTINGS.strategy;
 const CACHE_ASSETS = SETTINGS.cacheAssets;
 const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
+const scripts = SETTINGS.scripts;
+
+if (scripts.lenhth > 0) {
+  scripts.forEach(function (script) {
+    importScripts(script);
+  });
+}
+
+cleanupOutdatedCaches();
+googleFontsCache();
 
 //INFO: turn off logging
 self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;

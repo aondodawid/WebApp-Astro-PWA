@@ -44,6 +44,7 @@ export type PWAIcon = {
 
 export type Config =
   | {
+      scripts?: string[];
       isSetupPageEnabled?: boolean;
       createManifest?: boolean;
       cacheAssets?: string;

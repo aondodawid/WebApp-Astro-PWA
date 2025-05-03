@@ -34,7 +34,13 @@
     "pwa-install",
     "astro-pwa",
     "astro-plugin",
-    "astro-library"
+    "astro-library",
+    "astro4",
+    "astro-4-pwa",
+    "nottiffications",
+    "web-push",
+    "web-push-notifications",
+    "speed-up-astro"
   ],
   "scripts": {
     "postinstall": "node setup.js"
