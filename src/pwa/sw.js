@@ -20,6 +20,20 @@ const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
 cleanupOutdatedCaches();
 googleFontsCache();
 
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((cacheName) => ![CACHE_ASSETS].includes(cacheName))
+            .map((cacheName) => caches.delete(cacheName)),
+        ),
+      ),
+  );
+});
+
 //INFO: turn off logging
 self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
 // Precache the manifest
@@ -42,6 +56,7 @@ registerRoute(navigationRoute);
 
 function returnStrategy() {
   //INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
+  console.log("🚀 ~ returnStrategy ~ CACHE_ASSETS:", CACHE_ASSETS);
 
   switch (STRATEGY) {
     case "CacheFirst":

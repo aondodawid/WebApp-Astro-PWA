@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.0.7",
+  "version": "0.0.12",
   "type": "module",
   "exports": {
     ".": "./index.ts",
