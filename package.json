@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.0.14",
+  "version": "0.0.18",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -32,7 +32,8 @@
     "astro-library"
   ],
   "scripts": {
-    "postinstall": "node setup.js"
+    "postinstall": "node setup.js",
+    "generateAndBundleSW": "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/webapp-astro-pwa/src/pwa/workbox.config.cjs && node node_modules/webapp-astro-pwa/src/pwa/bundle-sw.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

@@ -1,3 +1,5 @@
+import type { Config } from "../types";
+import fs from "fs";
 import {
   generateManifestFile,
   runShellCommand,
@@ -6,8 +8,7 @@ import {
   updatePWAConfig,
   getPWAConfigPathFromGrandparent,
 } from "./utilities";
-import type { Config } from "../types";
-import fs from "fs";
+
 
 /**
  * @param config - The configuration object to apply.

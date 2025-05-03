@@ -1,21 +1,7 @@
-/**
- * Runs a shell command asynchronously and logs stdout, stderr, or errors to the console.
- * @param command - The shell command to execute.
- */
-function runShellCommand(command) {
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-    }
-    console.log(`stdout: ${stdout}`);
-  });
-}
-
-// write documentation for the function addScriptsToPackageJson
+import { exec } from "child_process";
+import { fileURLToPath } from "url";
+import path from "path";
+import fs from "fs";
 
 /**
  * Adds a script to the user's package.json file.
@@ -61,14 +47,8 @@ async function addScriptsToPackageJson(scriptName, scriptValue) {
 }
 
 // INFO: This script will add a script to the user's package.json file and run it
-// INFO: The script will generate a service worker using Workbox and bundle it using esbuild
 
-async function setup() {
-  await addScriptsToPackageJson(
-    "generateAndBundleSW",
-    "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/webapp-astro-pwa/src/pwa/workbox.config.cjs && node node_modules/webapp-astro-pwa/src/pwa/bundle-sw.mjs",
-  );
-
-  runShellCommand("npm run generateAndBundleSW");
-}
-setup();
+addScriptsToPackageJson(
+  "generateAndBundleSW",
+  "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/my-new-component-directory-astro/src/pwa/workbox.config.cjs && node node_modules/my-new-component-directory-astro/src/pwa/bundle-sw.mjs",
+);
