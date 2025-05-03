@@ -11,13 +11,78 @@ import {
 } from "workbox-strategies";
 
 const SETTINGS = process.env.settings;
-console.log("🚀 ~ SETTINGS:", SETTINGS);
 const STRATEGY = SETTINGS.strategy;
 const CACHE_ASSETS = SETTINGS.cacheAssets;
 const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
 const scripts = SETTINGS.scripts;
-const forceUpdate = SETTINGS.forceUpdate;
+const notification = SETTINGS.notification;
+const saveSubscriptionPath = SETTINGS.saveSubscriptionPath;
+const applicationServerKey = SETTINGS.applicationServerKey;
 
+if (notification) {
+  const urlBase64ToUint8Array = (base64String) => {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
+  };
+  const saveSubscription = async (subscription) => {
+    const response = await fetch(saveSubscriptionPath, {
+      method: "post",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(subscription),
+    });
+
+    return response.json();
+  };
+
+  const handleSubscription = async (e) => {
+    const subscription = await self.registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
+    });
+    saveSubscription(subscription);
+  };
+
+  self.addEventListener("activate", handleSubscription);
+
+  const getNotification = async (event) => {
+    console.log("notify");
+    console.log("notification :>> ", event.data);
+    let notification = { title: "Notification", body: "", icon: "", url: "/" };
+    if (event.data) {
+      try {
+        notification = event.data.json();
+      } catch {
+        // fallback if not JSON
+        notification.body = event.data.text();
+      }
+    }
+    event.waitUntil(
+      self.registration.showNotification(notification.title, {
+        body: notification.body,
+        icon: notification.icon,
+        data: { notifURL: notification.url },
+      }),
+    );
+  };
+  self.addEventListener("push", getNotification);
+
+  self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    const url = event.notification.data?.notifURL || "/";
+    event.waitUntil(clients.openWindow(url));
+  });
+}
 
 if (scripts.lenhth > 0) {
   scripts.forEach(function (script) {
@@ -100,14 +165,3 @@ const googleFontsRoute = new Route(
 );
 
 registerRoute(googleFontsRoute);
-
-
-if(forceUpdate) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      for (const registration of registrations) {
-        registration.update(); // Forces the browser to check for an updated sw.js
-      }
-    });
-  }
-}

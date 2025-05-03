@@ -1,4 +1,6 @@
 <script is:inline>
+  import pwaSettings from "../../../pwa.config.json";
+
   const registerSW = async () => {
     if ("serviceWorker" in navigator) {
       try {
@@ -13,4 +15,14 @@
     } else throw new Error("Service Worker is not supported in this browser");
   };
   window.addEventListener("load", registerSW);
+
+  if(pwaSettings?.forceUpdate) {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (const registration of registrations) {
+          registration.update(); // Forces the browser to check for an updated sw.js
+        }
+      });
+    }
+  }
 </script>

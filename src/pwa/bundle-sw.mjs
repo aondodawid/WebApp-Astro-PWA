@@ -7,7 +7,9 @@ const settings = {
   cacheAssets: config.cacheAssets,
   disableDevLogs: config.disableDevLogs,
   scripts: config.scripts,
-  forceUpdate: config.forceUpdate,
+  notification: config.notification,
+  saveSubscriptionPath: config.notification,
+  applicationServerKey: config.notification,
 };
 
 await esbuild.build({

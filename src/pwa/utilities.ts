@@ -55,14 +55,19 @@ function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
   if (!config) return pwaConfigJSON;
   const pwa = { ...pwaConfigJSON };
   const allowedKeys = [
+    "applicationServerKey",
+    "saveSubscriptionPath",
     "isInstallBtnVisible",
     "createManifest",
     "disableDevLogs",
     "manifestPath",
+    "notification",
+    "forceUpdate",
     "cacheAssets",
     "isManifest",
     "manifest",
     "strategy",
+    "scripts",
     "icons",
     "meta",
   ];

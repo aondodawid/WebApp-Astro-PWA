@@ -159,6 +159,24 @@ export default defineConfig({
 **Important:**
 When your application is running as a PWA, you may sometimes need to remove and re-add the service worker file (`sw.js`) for changes to take effect. Browsers aggressively cache service workers, so after making updates to your service worker or its configuration, clear the old service worker or unregister it to ensure users receive the latest version.
 
+Force update of service worker file default `false`
+
+```js
+// filepath: astro.config.mjs
+import { defineConfig } from 'astro/config';
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    PoweredWebAppBuilder({
+    // this line changed
+      "forceUpdate": true,
+    }),
+    ...
+  ]
+});
+```
+
 ### ⚡️ External Options
 
 #### Choose Strategy
@@ -455,6 +473,50 @@ Or, for a simple install button:
 ```astro
 <PWABtn btnText="Install App" btnBackground="#3a0ca3" hideSvg={false} />
 ```
+
+### Enabling Web Push Notifications
+
+You can easily enable web push notifications in your Astro PWA project using the `notification` option in the `PoweredWebAppBuilder` configuration. This allows your application to request user permission for push notifications and manage subscriptions for web push messages.
+
+#### How to Enable
+
+Add the following options to your `astro.config.mjs` (or `astro.config.ts`):
+
+```js
+import { defineConfig } from "astro/config";
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    PoweredWebAppBuilder({
+      notification: true, // Enables web push notifications (default: false)
+      saveSubscriptionPath: "path_to_server_for_save_subscription", // API endpoint to save push subscriptions
+      applicationServerKey: "key_client_side", // VAPID public key for push notifications
+    }),
+  ],
+});
+```
+
+#### Option Details
+
+- **notification**:
+  Set to `true` to enable web push notifications. By default, this is `false`. When enabled, your app will request user permission to receive push notifications and handle push subscription logic.
+
+- **saveSubscriptionPath**:
+  The server endpoint where user push subscriptions will be sent and stored. This should point to your backend API that manages push subscribers.
+
+- **applicationServerKey**:
+  The VAPID public key used for authenticating push messages on the client side. This key is required for subscribing users to push notifications.
+
+**Note:**
+Make sure your backend is set up to handle and store push subscriptions at the specified `saveSubscriptionPath`, and that you generate a valid VAPID key pair for secure push messaging.
+
+---
+
+With these options enabled, your PWA will be ready to request notification permissions and manage web push subscriptions, allowing you to send real-time updates directly to your users. Thanks to this option, you can send simple web push notifications with an icon, body, title, and URL.
+
+---
 
 ### Configure Your PWA
 
