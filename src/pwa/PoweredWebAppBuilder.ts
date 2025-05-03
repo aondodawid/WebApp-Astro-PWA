@@ -23,6 +23,7 @@ import {
  * - If the config file does not exist, returns the provided config {@link updatePWAConfig}.
  */
 function applyConfigurationsToFile(config: Config): Config {
+  console.log("🚀 ~ applyConfigurationsToFile ~ config:", config);
   const PWAConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
   console.log(
     "🚀 ~ applyConfigurationsToFile ~ PWAConfigFilePath:",
@@ -33,10 +34,6 @@ function applyConfigurationsToFile(config: Config): Config {
     const pwaConfigJSON = getConfigJSON(PWAConfigFilePath);
 
     const isSWFileExists = checkIsFileExistsInRoot("public/sw.js");
-    console.log(
-      "🚀 ~ applyConfigurationsToFile ~ isSWFileExists:",
-      isSWFileExists,
-    );
 
     if (!isSWFileExists) {
       runShellCommand("npm run generateAndBundleSW");
@@ -47,8 +44,11 @@ function applyConfigurationsToFile(config: Config): Config {
       config,
       pwaConfigJSON,
     );
+    console.log(
+      "🚀 ~ applyConfigurationsToFile ~ isFileChanged:",
+      isFileChanged,
+    );
     if (!isFileChanged) return pwaConfigJSON;
-    runShellCommand("npm run generateAndBundleSW");
     const finalConfigJSON = updatePWAConfig(pwaConfigJSON, config);
     const pwaConfigFilePath =
       getPWAConfigPathFromGrandparent("pwa.config.json");
@@ -78,8 +78,15 @@ export default function PoweredWebAppBuilder(config: Config) {
   return {
     name: "astro-hello",
     hooks: {
-      "astro:config:setup": () => {
-        const configurationObject = applyConfigurationsToFile(config);
+      "astro:config:setup": async () => {
+        const configurationObject = await applyConfigurationsToFile(config);
+        console.log(
+          "🚀 ~ PoweredWebAppBuilder ~ configurationObject:",
+          configurationObject,
+        );
+
+        runShellCommand("npm run generateAndBundleSW");
+
         if (config?.createManifest) {
           generateManifestFile(config);
         }

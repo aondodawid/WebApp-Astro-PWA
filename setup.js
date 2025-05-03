@@ -49,5 +49,5 @@ async function addScriptsToPackageJson(scriptName, scriptValue) {
 
 addScriptsToPackageJson(
   "generateAndBundleSW",
-  "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/my-new-component-directory-astro/src/pwa/workbox.config.cjs && node node_modules/my-new-component-directory-astro/src/pwa/bundle-sw.mjs",
+  "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/webapp-astro-pwa/src/pwa/workbox.config.cjs && node node_modules/webapp-astro-pwa/src/pwa/bundle-sw.mjs",
 );

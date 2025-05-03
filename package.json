@@ -1,11 +1,16 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.2.1",
+  "version": "0.2.7",
   "license": "MIT",
   "type": "module",
   "exports": {
     ".": "./index.ts",
     "./pwa": "./src/pwa/index.ts"
+  },
+  "author": "Dawid Aondo-Akaa <aondo1@gmail.com> ",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aondodawid/WebApp-Astro-PWA"
   },
   "files": [
     "src",
@@ -32,8 +37,7 @@
     "astro-library"
   ],
   "scripts": {
-    "postinstall": "node setup.js",
-    "generateAndBundleSW": "SW_DIST_PATH=src/pwa npx workbox-cli injectManifest node_modules/webapp-astro-pwa/src/pwa/workbox.config.cjs && node node_modules/webapp-astro-pwa/src/pwa/bundle-sw.mjs"
+    "postinstall": "node setup.js"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

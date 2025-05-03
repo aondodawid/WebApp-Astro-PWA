@@ -11,12 +11,7 @@ import {
 import { registerRoute, NavigationRoute, Route } from "workbox-routing";
 import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
 import { googleFontsCache } from "workbox-recipes";
-
-const SETTINGS = process.env.settings;
-const STRATEGY = SETTINGS.strategy;
-const CACHE_ASSETS = SETTINGS.cacheAssets;
-const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
-
+console.log("ok");
 cleanupOutdatedCaches();
 googleFontsCache();
 
@@ -33,6 +28,13 @@ self.addEventListener("activate", (event) => {
       ),
   );
 });
+const VITE_SETTINGS = import.meta.env.VITE_SETTINGS;
+console.log("🚀 ~ VITE_SETTINGS:", VITE_SETTINGS);
+const SETTINGS = process.env.settings;
+const STRATEGY = SETTINGS.strategy;
+const CACHE_ASSETS = SETTINGS.cacheAssets;
+const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
+console.log("🚀 ~ DISABLE_DEV_LOGS:", DISABLE_DEV_LOGS);
 
 //INFO: turn off logging
 self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
@@ -58,6 +60,7 @@ function returnStrategy() {
   //INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
   console.log("🚀 ~ returnStrategy ~ CACHE_ASSETS:", CACHE_ASSETS);
 
+  console.log("🚀 ~ returnStrategy ~ STRATEGY:", STRATEGY);
   switch (STRATEGY) {
     case "CacheFirst":
       return new CacheFirst({

@@ -4,7 +4,7 @@
   "cacheAssets": "static-assets",
   "disableDevLogs": true,
   "manifestPath": "manifest.json",
-  "strategy": "CacheFirst",
+  "strategy": "StaleWhileRevalidate",
   "manifest": {
     "name": "My PWA Example",
     "short_name": "PWAExample",
