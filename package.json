@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.2.12",
+  "version": "0.2.14",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -44,8 +44,6 @@
     "astro": "^5.7.10"
   },
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.5.0",
     "workbox-cli": "^7.3.0",
     "workbox-navigation-preload": "^7.3.0",
     "workbox-precaching": "^7.3.0",

@@ -1,6 +1,5 @@
 import config from "../../pwa.config.json" with { type: "json" };
 import * as esbuild from "esbuild";
-import "dotenv/config";
 
 
 const globPath = "src/pwa";

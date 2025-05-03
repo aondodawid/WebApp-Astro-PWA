@@ -148,8 +148,6 @@ export default defineConfig({
 });
 ```
 
-## ![Default caches in dev tools](./caches.png)
-
 ## 🧨 Usage AS PWA
 
 ### 1. Add the PWA Components
