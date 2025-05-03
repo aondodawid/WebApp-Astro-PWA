@@ -88,7 +88,8 @@ function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
  * @returns True if any property differs, false otherwise.
  */
 function checkIsPWAConfigChanged(config: Config, pwaConfigJSON: any): boolean {
-  if (!config) return false;
+  const isObjectEmpty = Object.entries(config as object).length === 0
+  if (!config || isObjectEmpty) return false;
 
   const pwaConfigJSONEntries = Object.entries(pwaConfigJSON);
   const configEntries = Object.entries(config);

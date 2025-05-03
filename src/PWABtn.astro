@@ -8,7 +8,7 @@ const { btnText , btnBackground, hideSvg } = Astro.props;
   import runPWASetup from "./view/utils/PWASetup";
   import { isPWAInstalled } from "./view/utils/utilities";
 
-  const isShowBtn = pwaSettings.isInstallBtnVisible && pwaSettings.isManifest;
+  const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings as any)?.isManifest ;
   const isInstalled = isPWAInstalled()
   const pwaBtn = document.getElementById("install");
   if(isInstalled) pwaBtn?.parentNode?.removeChild(pwaBtn);

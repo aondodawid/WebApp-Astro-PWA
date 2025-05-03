@@ -2,7 +2,6 @@
 
 A ready-to-use Astro component library for adding Progressive Web App (PWA) support to your Astro projects. This package provides drop-in components and utilities for manifest injection, service worker registration, install prompts, and more.
 
-
 ---
 
 ## 🚦 Supercharge Your Astro App with PWA!
@@ -81,7 +80,76 @@ After install, the setup script will automatically add a `generateAndBundleSW` s
 
 ---
 
-## ⚡ Usage
+## ⚡ BASIC Usage
+
+### Enable Web App possibilities and features across your entire Astro app
+
+To enable PWA features across your entire Astro app, import the `PWA` component and place it inside your main layout’s `<head>` section. This will inject the manifest, meta tags, and register the service worker automatically.
+
+````astro
+---
+// new code added
+import { PWA } from "webapp-astro-pwa";
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro Basics</title>
+   <!-- new code added -->
+    <PWA />
+  </head>
+
+
+
+Next Open your `astro.config.mjs` (or `astro.config.ts`) at your astro project and add the following
+
+```js
+import { defineConfig } from 'astro/config';
+// new code added
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    // new code added
+    PoweredWebAppBuilder({})
+  ]
+});
+
+
+Next, build your application using the command:
+
+```sh
+npm run dev
+
+This will generate the service worker file at
+/
+├── src/
+    ├── ap/
+        ├── sw.js
+
+enabling your app to function as a web app with offline capabilities (even if it’s not yet installable as a PWA still you don't have manifest file). By default, files will be stored in the browser’s Cache Storage under the name static-assets. You can change this name in the configuration to manage cache versions and control how assets are cached and updated. This approach gives you flexibility and full control over your app’s offline experience.
+
+```js
+import { defineConfig } from 'astro/config';
+// new code added
+import PoweredWebAppBuilder from "webapp-astro-pwa/pwa";
+
+export default defineConfig({
+  integrations: [
+    // this line changed
+    "cacheAssets": "static-assets_v2",
+  ]
+});
+...
+
+---
+## 🧨 Usage AS PWA
+
+
 
 ### 1. Add the PWA Components
 
@@ -101,7 +169,7 @@ import { PWA, PWABtn, PWASetupWindow } from "webapp-astro-pwa";
   background="#fff"
   hideSvg={false}
 />
-```
+````
 
 Or, for a simple install button:
 

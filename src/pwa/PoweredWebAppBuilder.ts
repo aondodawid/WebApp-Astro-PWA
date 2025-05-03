@@ -22,6 +22,7 @@ import fs from "fs";
  * - If the config file does not exist, returns the provided config {@link updatePWAConfig}.
  */
 function applyConfigurationsToFile(config: Config): Config {
+  console.log("run")
   const PWAConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
 
   if (PWAConfigFilePath && fs.existsSync(PWAConfigFilePath)) {

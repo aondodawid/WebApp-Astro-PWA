@@ -2,9 +2,11 @@
 import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
 import ServiceWorkerRegistration from "./view/components/ServiceWorkerRegistration.astro";
 
+
 import pwaOptions from "../pwa.config.json";
 
-const isShowManifest = pwaOptions.isManifest;
+const isShowManifest = (pwaOptions as any)?.isManifest || false;
+console.log("🚀 ~ isShowManifest:", isShowManifest)
 ---
 
 {isShowManifest && <MetaServiceWorker />}

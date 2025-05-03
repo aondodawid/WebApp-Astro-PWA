@@ -1,9 +1,8 @@
 {
   "isInstallBtnVisible": true,
   "createManifest": true,
-  "cacheAssets": "static-assets81",
+  "cacheAssets": "static-assets",
   "disableDevLogs": true,
-  "isManifest": true,
   "manifestPath": "manifest.json",
   "strategy": "CacheFirst",
   "manifest": {
