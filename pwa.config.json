@@ -3,6 +3,7 @@
   "createManifest": true,
   "cacheAssets": "static-assets",
   "disableDevLogs": true,
+  forceUpdate: false,
   "manifestPath": "manifest.json",
   "strategy": "StaleWhileRevalidate",
   "manifest": {

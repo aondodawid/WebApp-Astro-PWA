@@ -1,8 +1,6 @@
 ---
-import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
 import ServiceWorkerRegistration from "./view/components/ServiceWorkerRegistration.astro";
-
-
+import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
 import pwaOptions from "../pwa.config.json";
 
 const isShowManifest = (pwaOptions as any)?.isManifest || false;
@@ -10,3 +8,16 @@ const isShowManifest = (pwaOptions as any)?.isManifest || false;
 
 {isShowManifest && <MetaServiceWorker />}
 <ServiceWorkerRegistration />
+<script>
+  import pwaOptions from "../pwa.config.json";
+
+  if(pwaOptions?.forceUpdate) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const registration of registrations) {
+        registration.update(); // Forces the browser to check for an updated sw.js
+      }
+    });
+  }
+}
+</script>

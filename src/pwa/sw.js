@@ -19,7 +19,9 @@ const notification = SETTINGS.notification;
 const saveSubscriptionPath = SETTINGS.saveSubscriptionPath;
 const applicationServerKey = SETTINGS.applicationServerKey;
 
-if (notification) {
+console.log("🚀 ~ notification:", notification);
+
+async function runNotifications() {
   const urlBase64ToUint8Array = (base64String) => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
@@ -83,8 +85,9 @@ if (notification) {
     event.waitUntil(clients.openWindow(url));
   });
 }
+if (notification) runNotifications();
 
-if (scripts.lenhth > 0) {
+if (scripts?.lenght > 0) {
   scripts.forEach(function (script) {
     importScripts(script);
   });
