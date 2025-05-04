@@ -583,7 +583,7 @@ MIT
 
 Feel free to open issues or PRs for improvements and bug fixes.
 
-- [GitHub](https://github.com/aondodawid/WebApp-Astro-PWA)
+- [GitHub](https://github.com/aondodawid/WebApp-Astro-PWA/issues)
 
 ---
 
