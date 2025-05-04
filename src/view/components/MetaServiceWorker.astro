@@ -4,11 +4,20 @@ import type { IMetaItem, IIconItem } from "../../types";
 ---
 
 <link rel="manifest" href="./manifest.json" />
-{Array.isArray(pwaSettings.meta) && pwaSettings.meta.map((el: IMetaItem) => (
-  <meta name={el.name} content={el.content} />
-))}
-{Array.isArray(pwaSettings.icons) &&
-  pwaSettings.icons.map((icon: IIconItem) => (
-    <link rel={icon.rel} type={icon.type} sizes={icon.sizes} href={icon.href} />
-  ))
+{
+  Array.isArray(pwaSettings.meta) &&
+    pwaSettings.meta.map((el: IMetaItem) => (
+      <meta name={el.name} content={el.content} />
+    ))
+}
+{
+  Array.isArray(pwaSettings.icons) &&
+    pwaSettings.icons.map((icon: IIconItem) => (
+      <link
+        rel={icon.rel}
+        type={icon.type}
+        sizes={icon.sizes}
+        href={icon.href}
+      />
+    ))
 }

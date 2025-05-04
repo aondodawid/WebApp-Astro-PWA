@@ -2,5 +2,5 @@
 .env
 .DS_Store
 tsconfig.json
-manifest2.json
 caches.png
+.vscode

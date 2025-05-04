@@ -12,8 +12,7 @@ function checkIsPopoverSupport(): void {
     script.src = "/src/view/js/popover.min.js";
     script.async = true;
     script.onload = () => console.log("Popover polyfill loaded");
-    script.onerror = (e) =>
-      console.error("Failed to load popover polyfill:", e);
+    script.onerror = (e) => console.error("Failed to load popover polyfill:", e);
     document.head.appendChild(script);
   }
 }

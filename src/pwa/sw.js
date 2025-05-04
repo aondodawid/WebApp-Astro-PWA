@@ -14,21 +14,23 @@ const SETTINGS = process.env.settings;
 const STRATEGY = SETTINGS.strategy;
 const CACHE_ASSETS = SETTINGS.cacheAssets;
 const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
-const scripts = SETTINGS.scripts;
-const notification = SETTINGS.notification;
-const saveSubscriptionPath = SETTINGS.saveSubscriptionPath;
-const applicationServerKey = SETTINGS.applicationServerKey;
+const { scripts } = SETTINGS;
+const { notification } = SETTINGS;
+const { saveSubscriptionPath } = SETTINGS;
+const { applicationServerKey } = SETTINGS;
 
 async function runNotifications() {
   const urlBase64ToUint8Array = (base64String) => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
+      // eslint-disable-next-line no-useless-escape
       .replace(/\-/g, "+")
       .replace(/_/g, "/");
 
     const rawData = atob(base64);
     const outputArray = new Uint8Array(rawData.length);
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i);
     }
@@ -45,42 +47,42 @@ async function runNotifications() {
     return response.json();
   };
 
-  const handleSubscription = async (e) => {
-    const subscription = await self.registration.pushManager.subscribe({
+  const handleSubscription = async () => {
+    const subscription = await window.self.registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
     });
     saveSubscription(subscription);
   };
 
-  self.addEventListener("activate", handleSubscription);
+  window.self.addEventListener("activate", handleSubscription);
 
   const getNotification = async (event) => {
     console.log("notify");
     console.log("notification :>> ", event.data);
-    let notification = { title: "Notification", body: "", icon: "", url: "/" };
+    let notifications = { title: "Notification", body: "", icon: "", url: "/" };
     if (event.data) {
       try {
-        notification = event.data.json();
+        notifications = event.data.json();
       } catch {
         // fallback if not JSON
-        notification.body = event.data.text();
+        notifications.body = event.data.text();
       }
     }
     event.waitUntil(
-      self.registration.showNotification(notification.title, {
-        body: notification.body,
-        icon: notification.icon,
-        data: { notifURL: notification.url },
-      }),
+      window.self.registration.showNotification(notifications.title, {
+        body: notifications.body,
+        icon: notifications.icon,
+        data: { notifURL: notifications.url },
+      })
     );
   };
-  self.addEventListener("push", getNotification);
+  window.self.addEventListener("push", getNotification);
 
-  self.addEventListener("notificationclick", (event) => {
+  window.self.addEventListener("notificationclick", (event) => {
     event.notification.close();
     const url = event.notification.data?.notifURL || "/";
-    event.waitUntil(clients.openWindow(url));
+    event.waitUntil(window.self.clients.openWindow(url));
   });
 }
 if (notification) runNotifications();
@@ -94,10 +96,11 @@ if (scripts?.length > 0) {
 cleanupOutdatedCaches();
 googleFontsCache();
 
-//INFO: turn off logging
-self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
+// INFO: turn off logging
+// eslint-disable-next-line no-underscore-dangle
+window.self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
 // Precache the manifest
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(window.self.__WB_MANIFEST);
 
 // Enable navigation preload
 navigationPreload.enable();
@@ -108,14 +111,14 @@ navigationPreload.enable();
 const navigationRoute = new NavigationRoute(
   new NetworkFirst({
     cacheName: "navigations",
-  }),
+  })
 );
 
 // Register the navigation route
 registerRoute(navigationRoute);
 
 function returnStrategy() {
-  //INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
+  // INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
   switch (STRATEGY) {
     case "CacheFirst":
       return new CacheFirst({
@@ -147,7 +150,7 @@ const staticAssetsRoute = new Route(
   ({ request }) =>
     ["image", "script", "style"].includes(request.destination) ||
     request.origin === "https://fonts.googleapis.com",
-  returnStrategy(),
+  returnStrategy()
 );
 
 // Register the route handling static assets
@@ -157,7 +160,7 @@ const googleFontsRoute = new Route(
   ({ url }) => url.origin === "https://fonts.gstatic.com",
   new CacheFirst({
     cacheName: "google-fonts-stylesheets",
-  }),
+  })
 );
 
 registerRoute(googleFontsRoute);

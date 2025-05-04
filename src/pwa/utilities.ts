@@ -1,15 +1,15 @@
-import type { Config } from "../types";
 import { exec } from "child_process";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
+import type { Config } from "../types";
 
 /**
  * Returns the absolute path to 'pwa.config.json' located in the grandparent directory of the current file.
  * @param fileName - The name of the file to search for (currently unused, always returns 'pwa.config.json').
  * @returns The absolute path as a string, or undefined if not found.
  */
-function getPWAConfigPathFromGrandparent(fileName: string): string | undefined {
+function getPWAConfigPathFromGrandparent(): string | undefined {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const parentDir = path.dirname(__dirname);
@@ -136,7 +136,7 @@ function generateManifestFile(config: Config) {
 
 function checkIsFileExistsInRoot(filePath: string): boolean {
   const rootPath = process.cwd();
-  const path = rootPath + "/" + filePath;
+  const path = `${rootPath}/${filePath}`;
   return fs.existsSync(path);
 }
 

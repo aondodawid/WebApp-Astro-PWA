@@ -1,5 +1,5 @@
-import config from "../../pwa.config.json" with { type: "json" };
 import * as esbuild from "esbuild";
+import config from "../../pwa.config.json" with { type: "json" };
 
 const globPath = "src/pwa";
 const settings = {

@@ -45,8 +45,8 @@ export type PWAIcon = {
 
 export type Config =
   | {
-      saveSubscriptionPath: string;
-      applicationServerKey: string;
+      saveSubscriptionPath?: string;
+      applicationServerKey?: string;
       notification?: boolean;
       forceUpdate?: boolean;
       scripts?: string[];

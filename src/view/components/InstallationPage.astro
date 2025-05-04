@@ -1,5 +1,5 @@
 ---
-import InstallBtn from './InstallBtn.astro';
+import InstallBtn from "./InstallBtn.astro";
 
 export interface Props {
   title?: string;
@@ -9,19 +9,23 @@ export interface Props {
   hideSvg?: boolean;
 }
 
-const { title, description, btnText, btnBackground, hideSvg } = Astro.props as Props;
+const { title, description, btnText, btnBackground, hideSvg } =
+  Astro.props as Props;
 ---
 
-<div class="installation-page-container" >
+<div class="installation-page-container">
   <h2>{title ?? "Ready to install?"}</h2>
   <p>
     {description ?? "Click the button below to install the app on your device."}
   </p>
-  <InstallBtn btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg} />
+  <InstallBtn
+    btnText={btnText}
+    btnBackground={btnBackground}
+    hideSvg={hideSvg}
+  />
 </div>
 
 <style>
-
   .installation-page-container {
     text-align: center;
     padding: 20px 0;

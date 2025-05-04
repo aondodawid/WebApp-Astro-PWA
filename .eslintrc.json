@@ -1,0 +1,103 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "extraFileExtensions": [".astro"]
+  },
+  "overrides": [
+    {
+      "files": ["*.astro"],
+      "parser": "astro-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "extraFileExtensions": [".astro"]
+      },
+      "rules": {
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "prettier/prettier": "off"
+      }
+    },
+    {
+      "files": ["**/sw.js", "**/service-worker.js", "**/workbox-*.js"],
+      "env": {
+        "serviceworker": true,
+        "browser": true
+      },
+      "rules": {
+        "no-restricted-globals": "off",
+        "no-console": "off",
+        "no-underscore-dangle": "off",
+        "prettier/prettier": [
+          "error",
+          {
+            "trailingComma": "es5"
+          }
+        ]
+      },
+      "globals": {
+        "self": "readonly",
+        "clients": "readonly",
+        "caches": "readonly",
+        "registration": "readonly",
+        "importScripts": "readonly"
+      }
+    }
+  ],
+  "env": {
+    "node": true,
+    "es2021": true,
+    "jest": true,
+    "jquery": true,
+    "browser": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:astro/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "import", "astro", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".astro"]
+      }
+    }
+  },
+  "rules": {
+    "no-underscore-dangle": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "trailingComma": "es5"
+      }
+    ],
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "no-use-before-define": ["error", { "functions": false, "classes": false }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/*.test.js", "**/*.spec.js", "**/bundle-*.js", "**/bundle-*.mjs"]
+      }
+    ]
+  }
+}

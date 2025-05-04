@@ -1,5 +1,5 @@
-import type { Config } from "../types";
 import fs from "fs";
+import type { Config } from "../types";
 import {
   checkIsFileExistsInRoot,
   generateManifestFile,
@@ -9,7 +9,6 @@ import {
   updatePWAConfig,
   getPWAConfigPathFromGrandparent,
 } from "./utilities";
-// @ts-ignore
 
 /**
  * @param config - The configuration object to apply.
@@ -35,19 +34,12 @@ function applyConfigurationsToFile(config: Config): Config {
 
       return pwaConfigJSON;
     }
-    const isFileChanged: boolean = checkIsPWAConfigChanged(
-      config,
-      pwaConfigJSON,
-    );
+    const isFileChanged: boolean = checkIsPWAConfigChanged(config, pwaConfigJSON);
     if (!isFileChanged) return pwaConfigJSON;
     const finalConfigJSON = updatePWAConfig(pwaConfigJSON, config);
-    const pwaConfigFilePath =
-      getPWAConfigPathFromGrandparent("pwa.config.json");
+    const pwaConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
     if (pwaConfigFilePath && fs.existsSync(pwaConfigFilePath)) {
-      fs.writeFileSync(
-        pwaConfigFilePath,
-        JSON.stringify(finalConfigJSON, null, 2),
-      );
+      fs.writeFileSync(pwaConfigFilePath, JSON.stringify(finalConfigJSON, null, 2));
     }
     runShellCommand("npm run generateAndBundleSW");
     return finalConfigJSON;

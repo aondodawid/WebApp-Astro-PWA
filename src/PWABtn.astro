@@ -9,13 +9,14 @@ export interface Props {
 
 const { btnText, btnBackground, hideSvg } = Astro.props as Props;
 ---
-<script is:inline>
+
+<script>
   import pwaSettings from "../pwa.config.json";
   import runPWASetup from "./view/utils/PWASetup";
   import { isPWAInstalled } from "./view/utils/utilities";
 
   window.addEventListener("DOMContentLoaded", () => {
-    const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings)?.isManifest;
+    const isShowBtn = pwaSettings.isInstallBtnVisible && pwaSettings?.isManifest;
     const isInstalled = isPWAInstalled();
     const pwaBtn = document.getElementById("install");
     if (isInstalled && pwaBtn) pwaBtn.parentNode?.removeChild(pwaBtn);

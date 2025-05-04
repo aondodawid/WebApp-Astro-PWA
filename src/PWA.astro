@@ -3,19 +3,26 @@ import ServiceWorkerRegistration from "./view/components/ServiceWorkerRegistrati
 import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
 import pwaOptions from "../pwa.config.json";
 
-const isShowManifest = (pwaOptions as any)?.isManifest || false;
+type PWAOptions = {
+  isMansifest?: boolean;
+  forceUpdate?: boolean;
+  // add other properties from your pwa.config.json as needed
+};
+
+const isShowManifest = (pwaOptions as PWAOptions)?.isMansifest || false;
 ---
 
 {isShowManifest && <MetaServiceWorker />}
 <ServiceWorkerRegistration />
-<script is:inline>
+<script>
   import pwaOptions from "../pwa.config.json";
-  if (pwaOptions?.forceUpdate && 'serviceWorker' in navigator) {
+
+  if (pwaOptions?.forceUpdate && "serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (const registration of registrations) {
-          registration.update(); // Forces the browser to check for an updated sw.js
-        }
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach(function (registration) {
+          registration.update();
+        });
       });
     });
   }
