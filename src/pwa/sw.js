@@ -85,7 +85,7 @@ async function runNotifications() {
 }
 if (notification) runNotifications();
 
-if (scripts?.lenght > 0) {
+if (scripts?.length > 0) {
   scripts.forEach(function (script) {
     importScripts(script);
   });
@@ -121,27 +121,22 @@ function returnStrategy() {
       return new CacheFirst({
         cacheName: CACHE_ASSETS,
       });
-      break;
     case "CacheOnly":
       return new CacheOnly({
         cacheName: CACHE_ASSETS,
       });
-      break;
     case "NetworkFirst":
       return new NetworkFirst({
         cacheName: CACHE_ASSETS,
       });
-      break;
     case "NetworkOnly":
       return new NetworkOnly({
         cacheName: CACHE_ASSETS,
       });
-      break;
     default:
       return new StaleWhileRevalidate({
         cacheName: CACHE_ASSETS,
       });
-      break;
   }
 }
 

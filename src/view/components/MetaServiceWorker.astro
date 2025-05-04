@@ -1,11 +1,14 @@
 ---
 import pwaSettings from "../../../pwa.config.json";
+import type { IMetaItem, IIconItem } from "../../types";
 ---
 
 <link rel="manifest" href="./manifest.json" />
-{pwaSettings.meta && pwaSettings.meta.map((el : any) => <meta name={el.name} content={el.content} />)}
-{pwaSettings.icons &&
-  pwaSettings.icons.map((icon : any) => (
+{Array.isArray(pwaSettings.meta) && pwaSettings.meta.map((el: IMetaItem) => (
+  <meta name={el.name} content={el.content} />
+))}
+{Array.isArray(pwaSettings.icons) &&
+  pwaSettings.icons.map((icon: IIconItem) => (
     <link rel={icon.rel} type={icon.type} sizes={icon.sizes} href={icon.href} />
   ))
 }

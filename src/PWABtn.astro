@@ -1,20 +1,26 @@
 ---
 import InstallBtn from "./view/components/InstallBtn.astro";
 
-const { btnText , btnBackground, hideSvg } = Astro.props;
+export interface Props {
+  btnText?: string;
+  btnBackground?: string;
+  hideSvg?: boolean;
+}
+
+const { btnText, btnBackground, hideSvg } = Astro.props as Props;
 ---
-<script>
+<script is:inline>
   import pwaSettings from "../pwa.config.json";
   import runPWASetup from "./view/utils/PWASetup";
   import { isPWAInstalled } from "./view/utils/utilities";
 
-  const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings as any)?.isManifest ;
-  const isInstalled = isPWAInstalled()
-  const pwaBtn = document.getElementById("install");
-  if(isInstalled) pwaBtn?.parentNode?.removeChild(pwaBtn);
-
-  runPWASetup(isShowBtn);
-
+  window.addEventListener("DOMContentLoaded", () => {
+    const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings)?.isManifest;
+    const isInstalled = isPWAInstalled();
+    const pwaBtn = document.getElementById("install");
+    if (isInstalled && pwaBtn) pwaBtn.parentNode?.removeChild(pwaBtn);
+    runPWASetup(isShowBtn);
+  });
 </script>
 
-<InstallBtn btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg} />>
+<InstallBtn btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg} />

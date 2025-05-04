@@ -9,7 +9,7 @@ export interface Props {
   hideSvg?: boolean;
 }
 
-const { title, description, btnText, btnBackground,hideSvg } = Astro.props;
+const { title, description, btnText, btnBackground, hideSvg } = Astro.props as Props;
 ---
 
 <div class="installation-page-container" >

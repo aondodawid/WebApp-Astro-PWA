@@ -11,24 +11,20 @@ export interface Props {
   hideSvg?: boolean;
 }
 
-const { title, description, btnText, btnBackground, background, hideSvg } = Astro.props;
-
+const { title, description, btnText, btnBackground, background, hideSvg } = Astro.props as Props;
 ---
-
-<script>
+<script is:inline>
   import checkIsPopoverSupport from "./view/PopoverSupport";
   import pwaSettings from "../pwa.config.json";
   import runPWASetup from "./view/utils/PWASetup";
 
-  const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings as any)?.isManifest || false;
-
-
-
-  checkIsPopoverSupport();
-
-  runPWASetup(isShowBtn);
+  window.addEventListener("DOMContentLoaded", () => {
+    checkIsPopoverSupport();
+    const isShowBtn = pwaSettings.isInstallBtnVisible && (pwaSettings)?.isManifest;
+    runPWASetup(isShowBtn);
+  });
 </script>
-<div id="mypopover" popover="manual" style={{background: background }}>
+<div id="mypopover" popover="manual" style={{background: background}}>
   <div
     id="installation-message"
     style="display: none;"

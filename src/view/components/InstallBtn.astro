@@ -1,9 +1,14 @@
 ---
-const { btnText, btnBackground, hideSvg  } = Astro.props;
+export interface Props {
+  btnText?: string;
+  btnBackground?: string;
+  hideSvg?: boolean;
+}
+
+const { btnText, btnBackground, hideSvg } = Astro.props as Props;
 ---
 
 <button id="install" class="install-button" hidden="true" style={{background: btnBackground ?? 'linear-gradient(135deg, #4361ee, #3a0ca3)'}}>
-
   {!hideSvg && <svg
     xmlns="http://www.w3.org/2000/svg"
     width="20"

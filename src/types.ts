@@ -1,9 +1,10 @@
+import type { BeforeInstallPromptEvent } from "../../../../node_modules/astro/dist/runtime/client/hydrate.js";
+
 export type PWAInstallPromptType = {
   btnId: string;
-  installPrompt: Function;
+  installPrompt: BeforeInstallPromptEvent | null;
   btn: HTMLElement | null;
 
-  // isPWAInstalled(): boolean;
   checkIsPWAInstalled(): boolean;
   installPWABtnHandler(): Promise<void>;
   beforeInstallHandler(event: Event, btn: HTMLElement): void;
