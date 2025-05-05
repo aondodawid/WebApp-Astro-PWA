@@ -56,6 +56,8 @@ class PWAInstallPrompt {
       const result = await this.installPrompt.userChoice;
       if (result.outcome === "dismissed" || result.outcome === "accepted") {
         this.btn?.parentNode?.removeChild(this.btn);
+        const modal = document.getElementById("modal");
+        if (modal) modal.hidePopover();
       }
       console.log(`Install prompt was: ${result.outcome}`);
     }
