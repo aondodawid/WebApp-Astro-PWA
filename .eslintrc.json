@@ -4,7 +4,8 @@
   "parserOptions": {
     "ecmaVersion": 2021,
     "sourceType": "module",
-    "extraFileExtensions": [".astro"]
+    "extraFileExtensions": [".astro"],
+    "warnOnUnsupportedTypeScriptVersion": true
   },
   "overrides": [
     {
@@ -12,12 +13,26 @@
       "parser": "astro-eslint-parser",
       "parserOptions": {
         "parser": "@typescript-eslint/parser",
-        "extraFileExtensions": [".astro"]
+        "extraFileExtensions": [".astro"],
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
       },
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:astro/recommended",
+        "plugin:prettier/recommended",
+        "eslint:recommended"
+      ],
+
       "rules": {
         "import/no-unresolved": "off",
         "import/extensions": "off",
-        "prettier/prettier": "off"
+        "prettier/prettier": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "astro/no-set-html-directive": "error",
+        "astro/no-unused-css-selector": "warn"
       }
     },
     {
@@ -33,6 +48,7 @@
         "prettier/prettier": [
           "error",
           {
+            "parser": "babel",
             "trailingComma": "es5"
           }
         ]
@@ -54,10 +70,15 @@
     "browser": true
   },
   "extends": [
+    "plugin:eqeqeq-fix/recommended",
+    "airbnb-base",
+    "plugin:eqeqeq-fix/recommended",
     "airbnb-base",
     "plugin:@typescript-eslint/recommended",
     "plugin:astro/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": ["@typescript-eslint", "import", "astro", "prettier"],
   "settings": {
@@ -68,12 +89,18 @@
     }
   },
   "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
     "no-underscore-dangle": "off",
     "prettier/prettier": [
       "error",
       {
         "endOfLine": "auto",
-        "trailingComma": "es5"
+        "trailingComma": "es5",
+        "tabWidth": 2,
+        "semi": true
       }
     ],
     "no-unused-vars": "warn",
@@ -97,6 +124,13 @@
       "error",
       {
         "devDependencies": ["**/*.test.js", "**/*.spec.js", "**/bundle-*.js", "**/bundle-*.mjs"]
+      }
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": false
       }
     ]
   }

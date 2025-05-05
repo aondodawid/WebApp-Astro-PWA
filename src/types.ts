@@ -1,5 +1,11 @@
-import type { BeforeInstallPromptEvent } from "../../../../node_modules/astro/dist/runtime/client/hydrate.js";
-
+export interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice?: Promise<{ outcome: "accepted" | "dismissed"; platform?: string }>;
+}
+export type PWAOptions = {
+  isManifest?: boolean;
+  isInstallBtnVisible?: boolean;
+};
 export type PWAInstallPromptType = {
   btnId: string;
   installPrompt: BeforeInstallPromptEvent | null;

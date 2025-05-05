@@ -21,7 +21,9 @@ type BeforeInstallPromptEvent = Event & {
 
 class PWAInstallPrompt {
   btnId: string;
+
   installPrompt: BeforeInstallPromptEvent | null;
+
   btn: HTMLElement | null;
 
   constructor(btnId: string) {
@@ -70,16 +72,12 @@ class PWAInstallPrompt {
 
     const beforeInstallPromptHandler = (e: Event) => {
       this.beforeInstallHandler(e, installButton);
-      window.removeEventListener(
-        "beforeinstallprompt",
-        beforeInstallPromptHandler,
-      );
+      window.removeEventListener("beforeinstallprompt", beforeInstallPromptHandler);
     };
 
     window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
     const appinstalledHandler = () => {
-      if (isPopup && popup && typeof popup.hidePopover === "function")
-        popup.hidePopover();
+      if (isPopup && popup && typeof popup.hidePopover === "function") popup.hidePopover();
       installButton?.parentNode?.removeChild(installButton);
       window.removeEventListener("appinstalled", appinstalledHandler);
     };

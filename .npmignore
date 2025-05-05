@@ -4,3 +4,5 @@
 tsconfig.json
 caches.png
 .vscode
+.prettierrc
+.eslintrc.json

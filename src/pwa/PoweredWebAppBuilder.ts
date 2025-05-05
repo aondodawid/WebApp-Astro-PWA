@@ -23,7 +23,7 @@ import {
  * - If the config file does not exist, returns the provided config {@link updatePWAConfig}.
  */
 function applyConfigurationsToFile(config: Config): Config {
-  const PWAConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
+  const PWAConfigFilePath = getPWAConfigPathFromGrandparent();
   if (PWAConfigFilePath && fs.existsSync(PWAConfigFilePath)) {
     const pwaConfigJSON = getConfigJSON(PWAConfigFilePath);
 
@@ -37,7 +37,7 @@ function applyConfigurationsToFile(config: Config): Config {
     const isFileChanged: boolean = checkIsPWAConfigChanged(config, pwaConfigJSON);
     if (!isFileChanged) return pwaConfigJSON;
     const finalConfigJSON = updatePWAConfig(pwaConfigJSON, config);
-    const pwaConfigFilePath = getPWAConfigPathFromGrandparent("pwa.config.json");
+    const pwaConfigFilePath = getPWAConfigPathFromGrandparent();
     if (pwaConfigFilePath && fs.existsSync(pwaConfigFilePath)) {
       fs.writeFileSync(pwaConfigFilePath, JSON.stringify(finalConfigJSON, null, 2));
     }

@@ -262,11 +262,11 @@ To make your Astro project installable as a Progressive Web App (PWA) and automa
 
 #### 1. Set the Required Options
 
-- `isManifest: true` — ensures the manifest is used.
-- `createManifest: true` — instructs the builder to generate the manifest file.
-- `manifestPath: "manifest.json"` — specifies the path where the manifest will be created.
+- `isManifest: true` — ensures the manifest is used - default `false`.
+- `createManifest: true` — instructs the builder to generate the manifest file - default `false`.
+- `manifestPath: "manifest.json"` — specifies the path where the manifest will be created - default `manifest.json`.
 - `manifest` — the basic manifest info.
-- `icons` —table of icons for add to component in head.
+- `icons` — table of icons for add to component in head.
 
 #### 2. Add Basic settings
 
@@ -426,6 +426,8 @@ export default defineConfig({
 ### 🛎️ Additional Install Button
 
 To enable extra installation prompts, add the following to your configuration:
+
+- `isInstallBtnVisible: true` — ensures the additional installation is used - default `false`.
 
 ```js
 // filepath: astro.config.mjs

@@ -60,7 +60,12 @@ async function runNotifications() {
   const getNotification = async (event) => {
     console.log("notify");
     console.log("notification :>> ", event.data);
-    let notifications = { title: "Notification", body: "", icon: "", url: "/" };
+    let notifications = {
+      title: "Notification",
+      body: "",
+      icon: "",
+      url: "/",
+    };
     if (event.data) {
       try {
         notifications = event.data.json();
@@ -88,7 +93,7 @@ async function runNotifications() {
 if (notification) runNotifications();
 
 if (scripts?.length > 0) {
-  scripts.forEach(function (script) {
+  scripts.forEach((script) => {
     importScripts(script);
   });
 }
@@ -98,9 +103,9 @@ googleFontsCache();
 
 // INFO: turn off logging
 // eslint-disable-next-line no-underscore-dangle
-window.self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
+self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
 // Precache the manifest
-precacheAndRoute(window.self.__WB_MANIFEST);
+precacheAndRoute(self.__WB_MANIFEST);
 
 // Enable navigation preload
 navigationPreload.enable();
@@ -113,7 +118,6 @@ const navigationRoute = new NavigationRoute(
     cacheName: "navigations",
   })
 );
-
 // Register the navigation route
 registerRoute(navigationRoute);
 

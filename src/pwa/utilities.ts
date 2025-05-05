@@ -22,7 +22,7 @@ function getPWAConfigPathFromGrandparent(): string | undefined {
  * @param command - The shell command to execute.
  */
 function runShellCommand(command: string) {
-  exec(command, (error: any, stdout: any, stderr: any) => {
+  exec(command, (error: Error | null, stdout: string, stderr: string) => {
     if (error) {
       console.error(`Error: ${error.message}`);
       return;
@@ -51,7 +51,7 @@ function getConfigJSON(filePath: string) {
  * @param config - The configuration object with new values.
  * @returns The updated configuration object.
  */
-function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
+function updatePWAConfig(pwaConfigJSON: Config, config: Config): Config {
   if (!config) return pwaConfigJSON;
   const pwa = { ...pwaConfigJSON };
   const allowedKeys = [
@@ -72,11 +72,11 @@ function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
     "meta",
   ];
 
-  for (const key of allowedKeys) {
+  allowedKeys.forEach((key) => {
     if (Object.prototype.hasOwnProperty.call(config, key)) {
-      pwa[key] = config[key as keyof Config];
+      (pwa as Record<string, unknown>)[key] = config[key as keyof Config];
     }
-  }
+  });
   return pwa;
 }
 
@@ -86,21 +86,23 @@ function updatePWAConfig(pwaConfigJSON: any, config: Config): Config {
  * @param pwaConfigJSON - The existing PWA configuration object.
  * @returns True if any property differs, false otherwise.
  */
-function checkIsPWAConfigChanged(config: Config, pwaConfigJSON: any): boolean {
-  const isObjectEmpty = Object.entries(config as object).length === 0;
-  if (!config || isObjectEmpty) return false;
+function checkIsPWAConfigChanged(config: Config, pwaConfigJSON: Config): boolean {
+  if (!config || Object.entries(config).length === 0) return false;
+  if (!pwaConfigJSON) return true; // Handle undefined pwaConfigJSON
 
   const pwaConfigJSONEntries = Object.entries(pwaConfigJSON);
   const configEntries = Object.entries(config);
 
   if (pwaConfigJSONEntries.length !== configEntries.length) return true;
-  for (const [key, value] of pwaConfigJSONEntries) {
-    const pwaConfigJSONValue = JSON.stringify(pwaConfigJSON[key]).trim();
+
+  // Use .some to check if any property differs
+  const hasChanges = pwaConfigJSONEntries.some(([key, value]) => {
+    const pwaConfigJSONValue = JSON.stringify(value).trim();
     const configValue = JSON.stringify(config[key as keyof Config]).trim();
-    const isChanged = pwaConfigJSONValue === configValue;
-    if (!isChanged) return true;
-  }
-  return false;
+    return pwaConfigJSONValue !== configValue;
+  });
+
+  return hasChanges;
 }
 
 /**
@@ -116,12 +118,10 @@ function generateManifestFile(config: Config) {
   const { manifestPath, isManifest, manifest } = config;
   if (!manifestPath) console.log("Please provide a path for the manifest file");
   if (!isManifest)
-    console.log(
-      "Please set the isManifest property to true for the manifest file to be generated",
-    );
+    console.log("Please set the isManifest property to true for the manifest file to be generated");
   if (!manifest)
     console.log(
-      "Please provide a JSON for manifest in configuration in manifest properties for file to be generated",
+      "Please provide a JSON for manifest in configuration in manifest properties for file to be generated"
     );
   if (!manifestPath || !isManifest || !manifest) return;
   console.log("manifest file generated to the path: ", manifestPath);
@@ -136,8 +136,8 @@ function generateManifestFile(config: Config) {
 
 function checkIsFileExistsInRoot(filePath: string): boolean {
   const rootPath = process.cwd();
-  const path = `${rootPath}/${filePath}`;
-  return fs.existsSync(path);
+  const pathToFIle = `${rootPath}/${filePath}`;
+  return fs.existsSync(pathToFIle);
 }
 
 export {

@@ -22,8 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-manifest2.json
-
+.prettierrc
+.eslintrc.json
 caches.png
 .vscode

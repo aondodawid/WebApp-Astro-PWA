@@ -13,7 +13,7 @@ import EventHandler from "./EventHandler";
  * and manages the display of installation messages.
  * It also provides methods to run the installation process and check if the PWA is installed.
  * @example
- * const pwaSetup = new PWASetup("#install", "mypopover");
+ * const pwaSetup = new PWASetup("#install", "modal");
  * pwaSetup.run();
  * // Initializes the PWA installation process and checks if the PWA is installed.
  * // If the PWA is installed, no action is taken.
@@ -32,10 +32,7 @@ class PWASetup {
 
   private isPWAInstalled: boolean;
 
-  constructor(
-    installSelector: string = "#install",
-    popoverId: string = "mypopover",
-  ) {
+  constructor(installSelector: string = "#install", popoverId: string = "modal") {
     this.pwaInstall = new PWAInstallPrompt(installSelector);
     this.popover = document.getElementById(popoverId);
 

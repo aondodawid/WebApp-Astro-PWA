@@ -1,6 +1,6 @@
 {
-  "isInstallBtnVisible": true,
-  "createManifest": true,
+  "isInstallBtnVisible": false,
+  "createManifest": false,
   "cacheAssets": "static-assets",
   "disableDevLogs": true,
   "forceUpdate": false,

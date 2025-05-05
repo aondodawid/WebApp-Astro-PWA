@@ -19,8 +19,8 @@ function isBeforeInstallPromptSupported(): boolean {
  */
 function renderPopover(id: string): void {
   const popover = document.getElementById(id) as HTMLElement | null;
-  if (popover && typeof (popover as any).showPopover === "function") {
-    (popover as any).showPopover();
+  if (popover && "showPopover" in popover && typeof popover.showPopover === "function") {
+    (popover as HTMLElement & { showPopover: () => void }).showPopover();
   }
 }
 
@@ -31,9 +31,4 @@ function isPWAInstalled(): boolean {
   return window.matchMedia("(display-mode: standalone)").matches;
 }
 
-export {
-  isBeforeInstallPromptSupported,
-  renderPopover,
-  isPWAInstalled,
-  isChromeOrEdge,
-};
+export { isBeforeInstallPromptSupported, renderPopover, isPWAInstalled, isChromeOrEdge };

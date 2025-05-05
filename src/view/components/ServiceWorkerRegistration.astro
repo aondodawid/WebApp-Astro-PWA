@@ -1,7 +1,21 @@
 <script is:inline>
-  import { registerServiceWorker } from "../utils/registerServiceWorker";
+  // Utility to register the service worker
+  /**
+   * Registers the service worker if supported in the current environment.
+   * @param swPath - The path to the service worker file (default: "/sw.js").
+   */
 
-  window.addEventListener("load", () => {
-    registerServiceWorker();
-  });
+  const registerSW = async (swPath) => {
+    if ("serviceWorker" in navigator) {
+      try {
+        await navigator.serviceWorker.register(swPath);
+        console.log("Service Worker Registered");
+      } catch (err) {
+        console.log("Some error occurred while checking service worker registration");
+        console.log(err);
+      }
+    } else throw new Error("Service Worker is not supported in this browser");
+  };
+
+  window.addEventListener("load", () => registerSW("/sw.js"));
 </script>

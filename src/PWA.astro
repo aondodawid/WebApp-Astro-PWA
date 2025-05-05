@@ -4,12 +4,11 @@ import MetaServiceWorker from "./view/components/MetaServiceWorker.astro";
 import pwaOptions from "../pwa.config.json";
 
 type PWAOptions = {
-  isMansifest?: boolean;
+  isManifest?: boolean;
   forceUpdate?: boolean;
-  // add other properties from your pwa.config.json as needed
 };
 
-const isShowManifest = (pwaOptions as PWAOptions)?.isMansifest || false;
+const isShowManifest = (pwaOptions as PWAOptions)?.isManifest || false;
 ---
 
 {isShowManifest && <MetaServiceWorker />}

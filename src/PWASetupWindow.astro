@@ -1,6 +1,8 @@
 ---
 import InstallationMessage from "./view/components/InstallationMessage.astro";
 import InstallationPage from "./view/components/InstallationPage.astro";
+import pwaSettings from "../pwa.config.json";
+import { type PWAOptions } from "./types";
 
 export interface Props {
   title?: string;
@@ -9,23 +11,37 @@ export interface Props {
   btnBackground?: string;
   background?: string;
   hideSvg?: boolean;
+  isShow: boolean;
 }
 
-const { title, description, btnText, btnBackground, background, hideSvg } = Astro.props as Props;
+const isShowBtn =
+  ((pwaSettings as PWAOptions)?.isManifest && (pwaSettings as PWAOptions)?.isInstallBtnVisible) ||
+  false;
+
+const {
+  title,
+  description,
+  btnText,
+  btnBackground,
+  background,
+  hideSvg,
+  isShow = isShowBtn,
+} = Astro.props as Props;
 ---
 
-<script is:inline>
+<script>
   import checkIsPopoverSupport from "./view/PopoverSupport";
-  import pwaSettings from "../pwa.config.json";
   import runPWASetup from "./view/utils/PWASetup";
 
+  const modal = document.getElementById("modal");
+  const isShowBtn = modal?.dataset.show === "true" || false;
   window.addEventListener("DOMContentLoaded", () => {
     checkIsPopoverSupport();
-    const isShowBtn = pwaSettings.isInstallBtnVisible && pwaSettings?.isManifest;
+
     runPWASetup(isShowBtn);
   });
 </script>
-<div id="mypopover" popover="manual" style={{ background: background }}>
+<div data.show={isShow} id="modal" popover="manual" style={{ background: background }}>
   <div id="installation-message" style="display: none;" class="bg-brand-primary">
     <InstallationMessage />
   </div>
@@ -44,7 +60,7 @@ const { title, description, btnText, btnBackground, background, hideSvg } = Astr
   * {
     box-sizing: border-box;
   }
-  #mypopover:popover-open {
+  #modal:popover-open {
     border-radius: 16px;
     max-width: 400px;
     width: 90%;
@@ -52,7 +68,7 @@ const { title, description, btnText, btnBackground, background, hideSvg } = Astr
   }
 
   /* Gray overlay behind popover */
-  #mypopover::backdrop {
+  #modal::backdrop {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
   }
