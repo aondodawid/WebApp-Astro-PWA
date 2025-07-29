@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.2.32",
+  "version": "0.2.34",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -69,6 +69,8 @@
     "prettier-plugin-astro": "^0.14.1"
   },
   "dependencies": {
+    "firebase": "^11.7.1",
+    "firebase-admin": "^13.3.0",
     "@astrojs/check": "^0.9.4",
     "typescript": "^5.8.3",
     "workbox-cli": "^7.3.0",

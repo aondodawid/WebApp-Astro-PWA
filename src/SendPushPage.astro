@@ -1,0 +1,537 @@
+---
+import Firebase from "./Firebase.astro";
+---
+
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - WebPush</title>
+  </head>
+  <body>
+    <div id="app" style="display:none">
+      <div class="container">
+        <div class="header">
+          <h1>Dashboard - Send WebPush</h1>
+          <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+
+        <form class="astro-form" id="pushForm" autocomplete="off">
+          <div class="astro-form-group">
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" placeholder="Notification Title" />
+          </div>
+          <div class="astro-form-group">
+            <label for="body">Body</label>
+            <input id="body" name="body" type="text" placeholder="Notification Body" />
+          </div>
+          <div class="astro-form-group">
+            <label for="image">Image URL</label>
+            <input id="image" name="image" type="text" placeholder="Image URL (optional)" />
+          </div>
+          <div class="astro-form-group">
+            <label for="token">Token source</label>
+
+            <div class="radio-group">
+              <div>
+                <input
+                  type="radio"
+                  name="tokenSource"
+                  class="token-source"
+                  value="token"
+                  id="tokenSource1"
+                />
+                <label for="tokenSource1">Token</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  name="tokenSource"
+                  class="token-source"
+                  value="database"
+                  checked
+                  id="tokenSource2"
+                />
+                <label for="tokenSource2">Database</label>
+              </div>
+            </div>
+          </div>
+          <div class="astro-form-group" id="tokenContainer">
+            <label for="token">Token</label>
+            <input id="token" name="token" type="text" placeholder="Recipient Token" />
+          </div>
+          <div class="astro-form-group row" id="tokenList">
+            <label for="token">Token List</label>
+            <a id="showTokenList" class="astro-link">Show token list</a>
+          </div>
+
+          <button type="submit" class="astro-btn">Send Push Notification</button>
+          <div id="message"></div>
+        </form>
+        <section class="token-list hidden" id="showTokenList">
+          <div class="list-header">
+            <h2>Token List</h2>
+            <a class="btn-back">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-arrow-left"
+              >
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Back
+            </a>
+          </div>
+          <ol id="tokenListItems"></ol>
+          <b id="tokenCount"></b>
+        </section>
+      </div>
+    </div>
+    <Firebase />
+    <script type="module">
+      import {
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+      import {
+        getAuth,
+        signInWithCustomToken,
+      } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+      import { fetchData, onError, getFormDataString } from "./utils";
+
+      async function fetchTokens() {
+        const querySnapshot = await getDocs(collection(window.db, "tokens"));
+        const tokens = [];
+        querySnapshot.forEach((doc) => {
+          tokens.push({ id: doc.id, ...doc.data() });
+        });
+        return tokens;
+      }
+
+      function removeAfterExpiration() {
+        const expirationTime = localStorage.getItem("pwauuid_expiration");
+        if (expirationTime && Date.now() > Number(expirationTime)) {
+          localStorage.removeItem("pwauuid");
+          localStorage.removeItem("pwauuid_expiration");
+        }
+      }
+      removeAfterExpiration();
+      const url = `${window.location.origin}/pushapi?`;
+      const tokenList = document.getElementById("tokenList");
+      const tokenListClass = document.querySelector(".token-list");
+      const tokenListItems = document.getElementById("tokenListItems");
+      const tokenCount = document.getElementById("tokenCount");
+      async function loginWithToken(token) {
+        const auth = getAuth();
+
+        try {
+          const userCredential = await signInWithCustomToken(auth, token);
+          const tokens = await fetchTokens();
+          return tokens;
+        } catch (error) {
+          console.error("Error logging in with token:", error);
+          throw error;
+        }
+      }
+      function showTokenInput() {
+        const tokenSource1 = document.getElementById("tokenSource1");
+        const tokenInput = document.getElementById("tokenContainer");
+
+        if (!tokenSource1 || !tokenInput || !tokenList) return;
+        document.addEventListener("input", function (e) {
+          if (e?.target.classList.contains("token-source"))
+            tokenInput.style.display = tokenSource1.checked ? "block" : "none";
+          tokenList.style.display = tokenSource1.checked ? "none" : "block";
+        });
+
+        tokenInput.style.display = tokenSource1.checked ? "block" : "none";
+      }
+      async function checkUuid(uuid) {
+        const searchParams = `checkUuid=true&uuid=${uuid}`;
+        const data = await fetchData(url, searchParams, onError, "Unauthorized");
+        const isOk = data?.ok || false;
+        return isOk;
+      }
+      async function removeUuid() {
+        const searchParams = "remove=true";
+        const data = await fetchData(url, searchParams, () => {}, "Unauthorized");
+      }
+      async function sendMessageToTokens(tokens, formData, url) {
+        const tokensStringJSON = JSON.stringify(tokens || []);
+        formData.set("token", tokensStringJSON);
+
+        const params = getFormDataString(formData);
+        const data = await fetchData(url, params, () => {}, "Failed to send push notification");
+      }
+
+      async function getTokens(searchParams, url) {
+        const getToken = await fetchData(
+          url,
+          `${searchParams}&isTokenList=true`,
+          () => {},
+          "Failed to get token"
+        );
+        const token = getToken?.token;
+        const listOfTokens = await loginWithToken(token);
+        return listOfTokens.map((token) => token.token);
+      }
+      const submitForm = async (e, form, sessionUuid, errorMessage) => {
+        e.preventDefault();
+        const getForm = document.getElementById("pushForm");
+        const formData = new FormData(getForm);
+
+        const tokenSource = formData.get("tokenSource");
+        const token = formData.get("token");
+        const tokenInArray = [token];
+
+        formData.set("uuid", sessionUuid);
+        formData.set("token", JSON.stringify(tokenInArray));
+
+        if (tokenSource === "database") {
+          formData.delete("token");
+          const searchParams = getFormDataString(formData);
+          const tokens = await getTokens(searchParams, url);
+          const chunkSize = 500;
+          const tokenChunks = [];
+
+          for (let i = 0; i < tokens.length; i += chunkSize) {
+            tokenChunks.push(tokens.slice(i, i + chunkSize));
+          }
+
+          tokenChunks.forEach(async function (chunk) {
+            await sendMessageToTokens(chunk, formData, url);
+          });
+        } else {
+          const searchParams = getFormDataString(formData);
+          const data = await fetchData(
+            url,
+            searchParams,
+            errorMessage,
+            "Failed to send push notification"
+          );
+
+          if (!messageContainer) return;
+          messageContainer.style.color = data?.ok ? "lightgreen" : "red";
+          messageContainer.innerText = data?.message || "Unknown error";
+        }
+      };
+
+      const renderAfterLoad = async () => {
+        const form = document.getElementById("pushForm");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const messageContainer = document.getElementById("message");
+        const sessionUuid = localStorage.getItem("pwauuid") || "";
+        const isUuidOk = await checkUuid(sessionUuid);
+
+        function showTokenList(url) {
+          const backBtn = document.querySelector(".btn-back");
+          if (!tokenList || !showTokenList || !backBtn) return;
+          document.addEventListener("click", async function (e) {
+            if (e.target.id === "showTokenList") {
+              const params = `uuid=${sessionUuid}&tokenSource=database&isTokenList=true`;
+              const tokens = await getTokens(params, url);
+              tokenCount.innerText = `Total tokens: ${tokens.length}`;
+              tokens.forEach(function (token) {
+                const listItem = document.createElement("li");
+                listItem.innerText = token;
+                tokenListItems.appendChild(listItem);
+              });
+              tokenListClass.classList.remove("hidden");
+              form.style.display = "none";
+            } else if (e.target instanceof Element && e.target.closest(".btn-back")) {
+              tokenListClass.classList.add("hidden");
+              form.style.display = "flex";
+              tokenListItems.innerHTML = "";
+            }
+          });
+        }
+        showTokenInput();
+
+        showTokenList(url);
+
+        if (isUuidOk) {
+          const app = document.getElementById("app");
+          if (app) app.style.display = "flex";
+        } else {
+          const loginRequired = document.getElementById("login-required");
+          if (loginRequired) loginRequired.style.display = "block";
+        }
+
+        logoutBtn &&
+          logoutBtn.addEventListener("click", async () => {
+            await removeUuid();
+            localStorage.removeItem("pwauuid");
+            window.location.href = `${window.location.origin}/login`;
+          });
+
+        function errorMessage() {
+          if (!messageContainer) return;
+          messageContainer.style.color = "red";
+          messageContainer.innerText = "Error sending push notification";
+        }
+
+        form.addEventListener("submit", (e) => {
+          submitForm(e, form, sessionUuid, errorMessage);
+        });
+      };
+
+      document.addEventListener("DOMContentLoaded", renderAfterLoad);
+    </script>
+  </body>
+</html>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+  body {
+    background: linear-gradient(120deg, #18122b 0%, #443c68 50%, #635985 100%);
+    min-height: 100vh;
+    color: #f3f3f3;
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+  #token {
+    margin-left: 1rem;
+  }
+  #tokenListItems li {
+    max-width: 380px;
+  }
+  .token-list::-webkit-scrollbar {
+    width: 10px;
+    background: #2d2546;
+    border-radius: 8px;
+  }
+  .token-list::-webkit-scrollbar-thumb {
+    background: #635985;
+    border-radius: 8px;
+  }
+  .token-list::-webkit-scrollbar-thumb:hover {
+    background: #a084e8;
+  }
+
+  /* Firefox */
+  .token-list {
+    scrollbar-width: thin;
+    scrollbar-color: #635985 #2d2546;
+  }
+  .container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  h1,
+  h2 {
+    color: #e0e0ff;
+    margin: 0;
+  }
+  h1 {
+    width: 100%;
+  }
+  div.radio-group {
+    flex-direction: row;
+    display: flex;
+    gap: 4rem;
+  }
+  .hidden {
+    display: none;
+  }
+  .astro-link {
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-left: 8px;
+    text-decoration: underline;
+  }
+  .btn-back {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .login-box {
+    background: rgba(30, 24, 56, 0.95);
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 32px 0 rgba(44, 20, 80, 0.25);
+    border: 1.5px solid rgba(99, 89, 133, 0.3);
+  }
+
+  .login-btn,
+  .logout-btn {
+    background: linear-gradient(90deg, #a084e8 0%, #8b5cf6 100%);
+    color: #fff;
+    font-weight: 700;
+    padding: 0.9rem 1.7rem;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+    box-shadow: 0 2px 12px 0 rgba(160, 132, 232, 0.15);
+    transition: background 0.2s;
+  }
+
+  .logout-btn {
+    background: rgba(180, 60, 60, 0.8);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    display: flex;
+    width: 100%;
+    max-width: 160px;
+    justify-content: center;
+  }
+
+  .login-btn:hover,
+  .logout-btn:hover {
+    background: linear-gradient(90deg, #8b5cf6 0%, #a084e8 100%);
+    box-shadow: 0 4px 24px 0 rgba(160, 132, 232, 0.25);
+  }
+
+  .logout-btn:hover {
+    background: rgba(200, 40, 40, 1);
+  }
+
+  .astro-form {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    background: rgba(30, 24, 56, 0.95);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 32px 0 rgba(44, 20, 80, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 1.7rem;
+    border: 1.5px solid rgba(99, 89, 133, 0.3);
+  }
+  .token-list {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    background: rgba(30, 24, 56, 0.95);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 32px 0 rgba(44, 20, 80, 0.25);
+    flex-direction: column;
+    gap: 1.7rem;
+    border: 1.5px solid rgba(99, 89, 133, 0.3);
+    overflow: scroll;
+  }
+
+  .astro-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .astro-form label {
+    font-weight: 600;
+    color: #e0e0ff;
+    letter-spacing: 0.01em;
+  }
+  .row {
+    flex-direction: row;
+    align-items: center;
+  }
+  .astro-form input {
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid #443c68;
+    border-radius: 0.6rem;
+    font-size: 1rem;
+    background: rgba(24, 18, 43, 0.85);
+    color: #f3f3f3;
+    transition:
+      border 0.2s,
+      box-shadow 0.2s;
+    box-shadow: 0 1px 8px 0 rgba(99, 89, 133, 0.08);
+  }
+
+  .astro-form input:focus {
+    border-color: #a084e8;
+    outline: none;
+    box-shadow: 0 0 0 2px #a084e8;
+  }
+
+  .astro-btn {
+    background: linear-gradient(90deg, #a084e8 0%, #8b5cf6 100%);
+    color: #fff;
+    font-weight: 700;
+    padding: 0.9rem 1.7rem;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 12px 0 rgba(160, 132, 232, 0.15);
+    transition:
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .astro-btn:hover {
+    background: linear-gradient(90deg, #8b5cf6 0%, #a084e8 100%);
+    box-shadow: 0 4px 24px 0 rgba(160, 132, 232, 0.25);
+  }
+
+  #message {
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 520px) {
+    .astro-form {
+      max-width: 320px;
+    }
+    .header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin: 1rem auto;
+      max-width: 320px;
+    }
+  }
+</style>

@@ -8,10 +8,14 @@ export interface Props {
   title?: string;
   description?: string;
   btnText?: string;
-  btnBackground?: string;
+  btnStyle?: object;
   background?: string;
   hideSvg?: boolean;
-  isShow: boolean;
+  isShow?: boolean;
+  responsiveBtnStyles?: {
+    matchMedia: string;
+    styles: object;
+  };
 }
 
 const isShowBtn =
@@ -22,9 +26,10 @@ const {
   title,
   description,
   btnText,
-  btnBackground,
+  btnStyle,
   background,
   hideSvg,
+  responsiveBtnStyles,
   isShow = isShowBtn,
 } = Astro.props as Props;
 ---
@@ -50,8 +55,9 @@ const {
       title={title}
       description={description}
       btnText={btnText}
-      btnBackground={btnBackground}
+      btnStyles={btnStyle}
       hideSvg={hideSvg}
+      responsiveBtnStyles={responsiveBtnStyles}
     />
   </div>
 </div>

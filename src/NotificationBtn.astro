@@ -1,0 +1,71 @@
+---
+import pwaOptions from "../pwa.config.json";
+
+export interface Props {
+  btnText?: string;
+  style?: object;
+  responsiveStyles?: {
+    matchMedia: string;
+    styles: object;
+  };
+}
+type PWAOptions = {
+  notification?: boolean;
+};
+const beginStyles = {
+  background: "linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%)",
+  maxWidth: "250px",
+  height: "80px",
+  border: "none",
+  borderRadius: "10px",
+  padding: "14px 28px",
+  fontSize: "17px",
+  fontWeight: "600",
+  cursor: "pointer",
+  transition: "all 0.25s ease",
+  display: "flex",
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "10px",
+  margin: "0 auto",
+  color: "white",
+  boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 -2px 0 rgba(0, 0, 0, 0.24)",
+};
+const {
+  responsiveStyles,
+  style = beginStyles,
+  btnText = "Enable Notification",
+} = Astro.props as Props;
+
+if (responsiveStyles?.matchMedia) {
+  let mql = window.matchMedia(responsiveStyles.matchMedia);
+  if (mql.matches) {
+    Object.assign(style, responsiveStyles.styles);
+  }
+}
+const isNotification = (pwaOptions as PWAOptions)?.notification || false;
+---
+
+{
+  isNotification && (
+    <button style={style} id="notification-btn">
+      {btnText}
+    </button>
+  )
+}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function (e) {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      const btn = document.getElementById("notification-btn");
+      btn.style.opacity = 1;
+    }
+  });
+</script>
+<style>
+  button {
+    opacity: 0;
+  }
+</style>

@@ -18,153 +18,220 @@ const { scripts } = SETTINGS;
 const { notification } = SETTINGS;
 const { saveSubscriptionPath } = SETTINGS;
 const { applicationServerKey } = SETTINGS;
+const { isFirebaseMessaging } = SETTINGS;
 
-async function runNotifications() {
+/**
+ * Dynamically imports additional scripts into the Service Worker.
+ * @param {Array<string>} scripts - Array of script URLs to import.
+ */
+function addScriptsToSW(scripts) {
+  if (scripts && scripts.length > 0) {
+    scripts.forEach((script) => {
+      importScripts(script);
+    });
+  }
+}
+/**
+ * Handles web push notifications, including subscription and notification events.
+ */
+(function runNotifications() {
+  /**
+   * Converts a Base64 string to a Uint8Array.
+   * @param {string} base64String - The Base64 string to convert.
+   * @returns {Uint8Array} - The converted Uint8Array.
+   */
   const urlBase64ToUint8Array = (base64String) => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      // eslint-disable-next-line no-useless-escape
-      .replace(/\-/g, "+")
-      .replace(/_/g, "/");
+    const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
 
     const rawData = atob(base64);
     const outputArray = new Uint8Array(rawData.length);
 
-    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i);
     }
 
     return outputArray;
   };
-  const saveSubscription = async (subscription) => {
-    const response = await fetch(saveSubscriptionPath, {
-      method: "post",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(subscription),
-    });
 
+  /**
+   * Sends the subscription object to the server.
+   * @param {PushSubscription} subscription - The subscription object.
+   * @param {Object} body - The request body containing subscription details.
+   * @returns {Promise<Object>} - The server response.
+   */
+  const saveSubscription = async (saveSubscriptionPath, body) => {
+    const response = await fetch(saveSubscriptionPath, body);
     return response.json();
   };
 
+  /**
+   * Handles the subscription process for push notifications.
+   */
   const handleSubscription = async () => {
-    const subscription = await window.self.registration.pushManager.subscribe({
+    if (Notification.permission !== "granted") return;
+    const subscription = await self.registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
     });
-    saveSubscription(subscription);
+    const body = {
+      method: "post",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(subscription),
+    };
+    if (!saveSubscriptionPath) return;
+    saveSubscription(saveSubscriptionPath, body);
   };
 
-  window.self.addEventListener("activate", handleSubscription);
-
+  /**
+   * Handles incoming push notifications and displays them.
+   * @param {PushEvent} event - The push event.
+   */
   const getNotification = async (event) => {
-    console.log("notify");
-    console.log("notification :>> ", event.data);
     let notifications = {
       title: "Notification",
       body: "",
       icon: "",
+      badge: "",
+      image: "",
+      actions: [],
+      vibrate: [],
+      sound: "",
       url: "/",
     };
-    if (event.data) {
+    if (event && event?.data) {
       try {
-        notifications = event.data.json();
+        notifications = event.data.json().notification;
       } catch {
         // fallback if not JSON
         notifications.body = event.data.text();
       }
     }
-    event.waitUntil(
-      window.self.registration.showNotification(notifications.title, {
-        body: notifications.body,
-        icon: notifications.icon,
-        data: { notifURL: notifications.url },
-      })
+    const options = {
+      body: notifications.body,
+      icon: notifications.icon || notifications.image,
+      data: { notifURL: notifications.url },
+      badge: notifications.badge,
+      vibrate: notifications.vibrate,
+      sound: notifications.sound,
+      image: notifications.image,
+      actions: notifications.actions,
+    };
+    event?.waitUntil(
+      self.registration.showNotification(notifications.title || "Notification", options)
     );
   };
-  window.self.addEventListener("push", getNotification);
 
-  window.self.addEventListener("notificationclick", (event) => {
+  /**
+   * Handles messages to subscribe to push notifications.
+   * @param {MessageEvent} event - The message event.
+   */
+  function getNotificationAcceptMessage(event) {
+    getNotification();
+    if (isFirebaseMessaging) return;
+    if (event.data && event.data.action === "subscribeWEBAppPWA") {
+      handleSubscription();
+    }
+  }
+
+  /**
+   * Handles notification click events and opens the associated URL.
+   * @param {NotificationEvent} event - The notification click event.
+   */
+  function handleNitificationClick(event) {
     event.notification.close();
     const url = event.notification.data?.notifURL || "/";
-    event.waitUntil(window.self.clients.openWindow(url));
-  });
-}
-if (notification) runNotifications();
-
-if (scripts?.length > 0) {
-  scripts.forEach((script) => {
-    importScripts(script);
-  });
-}
-
-cleanupOutdatedCaches();
-googleFontsCache();
-
-// INFO: turn off logging
-// eslint-disable-next-line no-underscore-dangle
-self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
-// Precache the manifest
-precacheAndRoute(self.__WB_MANIFEST);
-
-// Enable navigation preload
-navigationPreload.enable();
-
-// Create a new navigation route that uses the Network-first, falling back to
-// cache strategy for navigation requests with its own cache. This route will be
-// handled by navigation preload. The NetworkOnly strategy will work as well.
-const navigationRoute = new NavigationRoute(
-  new NetworkFirst({
-    cacheName: "navigations",
-  })
-);
-// Register the navigation route
-registerRoute(navigationRoute);
-
-function returnStrategy() {
-  // INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
-  switch (STRATEGY) {
-    case "CacheFirst":
-      return new CacheFirst({
-        cacheName: CACHE_ASSETS,
-      });
-    case "CacheOnly":
-      return new CacheOnly({
-        cacheName: CACHE_ASSETS,
-      });
-    case "NetworkFirst":
-      return new NetworkFirst({
-        cacheName: CACHE_ASSETS,
-      });
-    case "NetworkOnly":
-      return new NetworkOnly({
-        cacheName: CACHE_ASSETS,
-      });
-    default:
-      return new StaleWhileRevalidate({
-        cacheName: CACHE_ASSETS,
-      });
+    event?.waitUntil(self.clients.openWindow(url));
   }
+
+  /**
+   * Registers event listeners for push notifications.
+   */
+  function runNotificationsEventsListeners() {
+    self.addEventListener("message", getNotificationAcceptMessage);
+    self.addEventListener("push", getNotification);
+    self.addEventListener("notificationclick", handleNitificationClick);
+    if (isFirebaseMessaging) return;
+    self.addEventListener("activate", handleSubscription);
+  }
+
+  if (notification) runNotificationsEventsListeners();
+})();
+
+/**
+ * Configures caching strategies and routes using Workbox.
+ */
+function workboxCacheAssets() {
+  cleanupOutdatedCaches();
+  googleFontsCache();
+
+  // INFO: turn off logging
+  // eslint-disable-next-line no-underscore-dangle
+  self.__WB_DISABLE_DEV_LOGS = DISABLE_DEV_LOGS;
+
+  // Precache the manifest
+  precacheAndRoute(self.__WB_MANIFEST);
+
+  // Enable navigation preload
+  navigationPreload.enable();
+
+  // Create a navigation route with a Network-first strategy
+  const navigationRoute = new NavigationRoute(
+    new NetworkFirst({
+      cacheName: "navigations",
+    })
+  );
+  registerRoute(navigationRoute);
+
+  /**
+   * Returns the caching strategy based on the configured strategy.
+   * @returns {WorkboxStrategy} - The caching strategy.
+   */
+  // INFO: Possible strategies is CacheFirst, CacheOnly, NetworkFirst, NetworkOnly, StaleWhileRevalidate
+
+  function returnStrategy() {
+    switch (STRATEGY) {
+      case "CacheFirst":
+        return new CacheFirst({
+          cacheName: CACHE_ASSETS,
+        });
+      case "CacheOnly":
+        return new CacheOnly({
+          cacheName: CACHE_ASSETS,
+        });
+      case "NetworkFirst":
+        return new NetworkFirst({
+          cacheName: CACHE_ASSETS,
+        });
+      case "NetworkOnly":
+        return new NetworkOnly({
+          cacheName: CACHE_ASSETS,
+        });
+      default:
+        return new StaleWhileRevalidate({
+          cacheName: CACHE_ASSETS,
+        });
+    }
+  }
+
+  // Create a route for static assets with a caching strategy
+  const staticAssetsRoute = new Route(
+    ({ request }) =>
+      ["image", "script", "style"].includes(request.destination) ||
+      request.origin === "https://fonts.googleapis.com",
+    returnStrategy()
+  );
+  registerRoute(staticAssetsRoute);
+
+  // Create a route for Google Fonts with a Cache-first strategy
+  const googleFontsRoute = new Route(
+    ({ url }) => url.origin === "https://fonts.gstatic.com",
+    new CacheFirst({
+      cacheName: "google-fonts-stylesheets",
+    })
+  );
+  registerRoute(googleFontsRoute);
 }
 
-// Create a route for image, script, or style requests that use a
-// stale-while-revalidate strategy. This route will be unaffected
-// by navigation preload.
-const staticAssetsRoute = new Route(
-  ({ request }) =>
-    ["image", "script", "style"].includes(request.destination) ||
-    request.origin === "https://fonts.googleapis.com",
-  returnStrategy()
-);
-
-// Register the route handling static assets
-registerRoute(staticAssetsRoute);
-
-const googleFontsRoute = new Route(
-  ({ url }) => url.origin === "https://fonts.gstatic.com",
-  new CacheFirst({
-    cacheName: "google-fonts-stylesheets",
-  })
-);
-
-registerRoute(googleFontsRoute);
+addScriptsToSW(scripts);
+workboxCacheAssets();

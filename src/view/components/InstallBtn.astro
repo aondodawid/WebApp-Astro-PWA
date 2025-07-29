@@ -1,21 +1,43 @@
 ---
 export interface Props {
   btnText?: string;
-  btnBackground?: string;
+  style?: object;
   hideSvg?: boolean;
+  responsiveStyles?: {
+    matchMedia: string;
+    styles: object;
+  };
 }
 
-const { btnText, btnBackground, hideSvg } = Astro.props as Props;
+const beginStyles = {
+  background: "linear-gradient(135deg, #4361ee, #3a0ca3)",
+  color: "white",
+  border: "none",
+  borderRadius: "10px",
+  padding: "14px 28px",
+  fontSize: "17px",
+  fontWeight: "600",
+  cursor: "pointer",
+  transition: "all 0.25s ease",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "10px",
+  margin: "0 auto",
+  boxShadow: "0 4px 12px rgba(74, 97, 238, 0.2)",
+};
+
+const { btnText, responsiveStyles, hideSvg, style = beginStyles } = Astro.props as Props;
+
+if (responsiveStyles?.matchMedia) {
+  const mql = window.matchMedia(responsiveStyles.matchMedia);
+  if (mql.matches) {
+    Object.assign(style, responsiveStyles.styles);
+  }
+}
 ---
 
-<button
-  id="install"
-  class="install-button"
-  hidden="true"
-  style={{
-    background: btnBackground ?? "linear-gradient(135deg, #4361ee, #3a0ca3)",
-  }}
->
+<button id="install" class="install-button" hidden="true" style={style}>
   {
     !hideSvg && (
       <svg
@@ -40,41 +62,7 @@ const { btnText, btnBackground, hideSvg } = Astro.props as Props;
 </button>
 
 <style>
-  .install-button {
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 28px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(74, 97, 238, 0.2);
-  }
-
-  .install-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(74, 97, 238, 0.4);
-    background: linear-gradient(135deg, #3a56e0, #2f0a94);
-  }
-
-  .install-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(74, 97, 238, 0.3);
-  }
-
   .download-icon {
     margin-right: 2px;
-  }
-  @media (max-width: 480px) {
-    .install-button {
-      width: 100%;
-      padding: 16px;
-    }
   }
 </style>

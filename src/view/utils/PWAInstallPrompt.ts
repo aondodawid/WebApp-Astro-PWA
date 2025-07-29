@@ -77,12 +77,13 @@ class PWAInstallPrompt {
       window.removeEventListener("beforeinstallprompt", beforeInstallPromptHandler);
     };
 
-    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
     const appinstalledHandler = () => {
       if (isPopup && popup && typeof popup.hidePopover === "function") popup.hidePopover();
       installButton?.parentNode?.removeChild(installButton);
       window.removeEventListener("appinstalled", appinstalledHandler);
     };
+
+    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
     window.addEventListener("appinstalled", appinstalledHandler);
   };
 }

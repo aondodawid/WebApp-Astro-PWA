@@ -14,15 +14,9 @@ const isShowManifest = (pwaOptions as PWAOptions)?.isManifest || false;
 {isShowManifest && <MetaServiceWorker />}
 <ServiceWorkerRegistration />
 <script>
-  import pwaOptions from "../pwa.config.json";
+  import SWUtils from "./view/utils/SWUtils";
 
-  if (pwaOptions?.forceUpdate && "serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach(function (registration) {
-          registration.update();
-        });
-      });
-    });
-  }
+  const swUtils = new SWUtils();
+  swUtils.notificationPermissions();
+  swUtils.forceUpdate();
 </script>

@@ -1,0 +1,70 @@
+---
+
+import pwaOptions from "../pwa.config.json";
+type PWAOptions = {
+  firebaseConfig: object;
+  vapidKey: string;
+};
+const { firebaseConfig, vapidKey } = pwaOptions;
+const configAsString = JSON.stringify(firebaseConfig, null, 2).replace(/,/g, ",\n");
+
+const script = `
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+  import {
+    getMessaging,
+    getToken,
+  } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-messaging.js";
+
+  const firebaseConfig = ${configAsString};
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+
+  async function addToken(token) {
+    try {
+      const docRef = await addDoc(collection(window.db, "tokens"), {
+        token: token,
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+  if ("serviceWorker" in navigator && "PushManager" in window) {
+    navigator.serviceWorker.ready.then((registration) => {
+      console.log("Service Worker is ready:", registration);
+      const messaging = getMessaging(app);
+      const astroPwaWebPushToken = localStorage.getItem("astroPwaWebPushToken");
+      if(astroPwaWebPushToken === "" || astroPwaWebPushToken === null) {
+        getToken(messaging, {
+          serviceWorkerRegistration: registration,
+          vapidKey:
+          "${vapidKey}",
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              localStorage.setItem("astroPwaWebPushToken", currentToken);
+              addToken(currentToken)
+            } else {
+              console.log(
+                "No registration token available. Request permission to generate one.",
+              );
+            }
+          })
+          .catch((err) => {
+            console.log("An error occurred while retrieving token. ", err);
+          });
+      }
+
+    });
+  } else {
+  console.warn("Push messaging is not supported in this browser.");
+  }
+
+
+`;
+---
+
+<script type="module" is:inline set:html={script} />

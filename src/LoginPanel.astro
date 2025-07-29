@@ -1,0 +1,151 @@
+<script>
+  import { fetchData } from "./utils";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("login-form") as HTMLFormElement;
+    const messageContainer = document.getElementById("message");
+
+    if (!form) return;
+
+    function renderErrorMessage() {
+      if (!messageContainer) return;
+      messageContainer.style.color = "red";
+      messageContainer.innerText = "Error sending push notification";
+    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const values = [...formData.entries()];
+      const stringValues = values.map(([key, value]) => [key, String(value)]);
+      const searchParams = new URLSearchParams(stringValues).toString();
+      const url = `${window.location.origin}/pushapi?`;
+      const data = await fetchData(url, searchParams, renderErrorMessage);
+      if (data?.ok) localStorage.setItem("pwauuid", data.uuid);
+      localStorage.setItem("pwauuid", data.uuid);
+      const expirationTime = Date.now() + 55 * 60 * 1000; // 1 hour
+      localStorage.setItem("pwauuid_expiration", expirationTime.toString());
+
+      window.location.href = `${window.location.origin}/sendpush`;
+      if (!messageContainer) return;
+      messageContainer.style.color = data.ok ? "lightgreen" : "red";
+      messageContainer.innerText = data?.message || "Unknown error";
+    });
+  });
+</script>
+
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Admin Login</h1>
+      <form class="astro-form" id="login-form">
+        <div class="astro-form-group">
+          <label for="user">Login</label>
+          <input id="user" name="user" type="text" placeholder="Login" required />
+        </div>
+        <div class="astro-form-group">
+          <label for="pass">Password</label>
+          <input id="pass" name="password" type="password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="astro-btn">Log In</button>
+        <div id="message"></div>
+      </form>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    background: linear-gradient(120deg, #18122b 0%, #443c68 50%, #635985 100%);
+    min-height: 100vh;
+    color: #f3f3f3;
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #e0e0ff;
+  }
+
+  .astro-form {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    background: rgba(30, 24, 56, 0.95);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 32px 0 rgba(44, 20, 80, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 1.7rem;
+    border: 1.5px solid rgba(99, 89, 133, 0.3);
+  }
+
+  .astro-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .astro-form label {
+    font-weight: 600;
+    color: #e0e0ff;
+    letter-spacing: 0.01em;
+  }
+
+  .astro-form input {
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid #443c68;
+    border-radius: 0.6rem;
+    font-size: 1rem;
+    background: rgba(24, 18, 43, 0.85);
+    color: #f3f3f3;
+    transition:
+      border 0.2s,
+      box-shadow 0.2s;
+    box-shadow: 0 1px 8px 0 rgba(99, 89, 133, 0.08);
+  }
+
+  .astro-form input:focus {
+    border-color: #a084e8;
+    outline: none;
+    box-shadow: 0 0 0 2px #a084e8;
+  }
+
+  .astro-btn {
+    background: linear-gradient(90deg, #a084e8 0%, #8b5cf6 100%);
+    color: #fff;
+    font-weight: 700;
+    padding: 0.9rem 1.7rem;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 12px 0 rgba(160, 132, 232, 0.15);
+    transition:
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .astro-btn:hover {
+    background: linear-gradient(90deg, #8b5cf6 0%, #a084e8 100%);
+    box-shadow: 0 4px 24px 0 rgba(160, 132, 232, 0.25);
+  }
+</style>

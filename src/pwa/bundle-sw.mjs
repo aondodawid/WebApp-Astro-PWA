@@ -8,8 +8,9 @@ const settings = {
   disableDevLogs: config.disableDevLogs,
   scripts: config.scripts,
   notification: config.notification,
-  saveSubscriptionPath: config.notification,
-  applicationServerKey: config.notification,
+  saveSubscriptionPath: config.saveSubscriptionPath,
+  applicationServerKey: config.applicationServerKey,
+  isFirebaseMessaging: config.isFirebaseMessaging,
 };
 
 await esbuild.build({

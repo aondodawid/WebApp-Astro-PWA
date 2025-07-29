@@ -8,12 +8,15 @@ const isShowBtn =
   false;
 export interface Props {
   btnText?: string;
-  btnBackground?: string;
   hideSvg?: boolean;
-  isShow: boolean;
+  isShow?: boolean;
+  style?: object;
+  responsiveStyles?: {
+    matchMedia: string;
+    styles: object;
+  };
 }
-
-const { btnText, btnBackground, hideSvg, isShow = isShowBtn } = Astro.props as Props;
+const { btnText, responsiveStyles, style, hideSvg, isShow = isShowBtn } = Astro.props as Props;
 ---
 
 <script>
@@ -33,7 +36,7 @@ const { btnText, btnBackground, hideSvg, isShow = isShowBtn } = Astro.props as P
 {
   isShow && (
     <div id="btn-container" data-show={isShow}>
-      <InstallBtn btnText={btnText} btnBackground={btnBackground} hideSvg={hideSvg} />
+      <InstallBtn btnText={btnText} style={style} responsiveStyles={responsiveStyles} hideSvg={hideSvg} />
     </div>
   )
 }

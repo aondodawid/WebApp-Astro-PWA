@@ -27,9 +27,6 @@ function runShellCommand(command: string) {
       console.error(`Error: ${error.message}`);
       return;
     }
-    if (stderr) {
-      // console.error(`stderr: ${stderr}`);
-    }
     console.log(`stdout: ${stdout}`);
   });
 }
@@ -55,17 +52,25 @@ function updatePWAConfig(pwaConfigJSON: Config, config: Config): Config {
   if (!config) return pwaConfigJSON;
   const pwa = { ...pwaConfigJSON };
   const allowedKeys = [
+    "notificationAutoRequestPermission",
     "applicationServerKey",
     "saveSubscriptionPath",
+    "fcmServiceAccountKey",
     "isInstallBtnVisible",
+    "isFirebaseMessaging",
+    "notificationBtn",
     "createManifest",
+    "firebaseConfig",
     "disableDevLogs",
     "manifestPath",
     "notification",
     "forceUpdate",
     "cacheAssets",
     "isManifest",
+    "AUTH_PASS",
+    "AUTH_USER",
     "manifest",
+    "vapidKey",
     "strategy",
     "scripts",
     "icons",

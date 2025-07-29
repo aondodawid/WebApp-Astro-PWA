@@ -5,11 +5,16 @@ export interface Props {
   title?: string;
   description?: string;
   btnText?: string;
-  btnBackground?: string;
+  btnStyles?: object;
   hideSvg?: boolean;
+  style?: object;
+  responsiveBtnStyles?: {
+    matchMedia: string;
+    styles: object;
+  };
 }
 
-const { title, description, btnText, btnBackground, hideSvg } =
+const { title, description, btnText, btnStyles, responsiveBtnStyles, hideSvg } =
   Astro.props as Props;
 ---
 
@@ -20,7 +25,8 @@ const { title, description, btnText, btnBackground, hideSvg } =
   </p>
   <InstallBtn
     btnText={btnText}
-    btnBackground={btnBackground}
+    style={btnStyles}
+    responsiveStyles={responsiveBtnStyles}
     hideSvg={hideSvg}
   />
 </div>

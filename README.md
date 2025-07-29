@@ -237,7 +237,10 @@ export default defineConfig({
   integrations: [
     PoweredWebAppBuilder({
       // ...other options...
-      scripts: ["./src/pwa/custom-sw-script.js", "./src/pwa/analytics-sw.js"],
+      scripts: [
+        "http://example.com/src/assets/js.js/custom-sw-script.js",
+        "http://example.com/src/assets/js.js/analytics-sw.js",
+      ],
     }),
   ],
 });
@@ -247,7 +250,10 @@ All scripts listed will be injected at the top of your generated `sw.js` using `
 
 ```js
 // In the generated sw.js
-importScripts("./src/pwa/custom-sw-script.js", "./src/pwa/analytics-sw.js");
+importScripts(
+  "http://example.com/src/assets/js.js/custom-sw-script.js",
+  "http://example.com/src/assets/js.js/analytics-sw.js"
+);
 // ...rest of the service worker code...
 ```
 

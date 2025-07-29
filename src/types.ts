@@ -67,5 +67,7 @@ export type Config =
       meta?: PWAMeta[];
       icons?: PWAIcon[];
       manifest?: object;
+      notificationAutoRequestPermission?: boolean;
+      notificationBtn?: boolean;
     }
   | undefined;
