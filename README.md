@@ -1,5 +1,6 @@
 # WebApp Astro PWA
 
+
 A ready-to-use Astro component library for adding Progressive Web App (PWA) support to your Astro projects. This package provides drop-in components and utilities for manifest injection, service worker registration, install prompts, and more. Includes a web push management panel seamlessly integrated with Firebase. Fully support Astro 5
 
 ---
@@ -560,6 +561,7 @@ export default defineConfig({
 ---
 
 ### 🔔 Web Push Notifications with Firebase and Astro (Full Integration Guide)
+<img width="836" height="835" alt="Image" src="https://github.com/user-attachments/assets/762c5c9a-9d90-46a4-98ee-5083be55f10d" />
 
 ☁️ Firebase Setup
 
