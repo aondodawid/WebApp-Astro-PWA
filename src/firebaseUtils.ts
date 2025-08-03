@@ -1,4 +1,3 @@
-
 import { messaging } from "./firebaseConfig";
 
 async function sendMessageToDevice(message: any) {

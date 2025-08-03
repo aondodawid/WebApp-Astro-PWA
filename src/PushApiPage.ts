@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { auth } from "../firebaseConfig";
-import { sendMessageToDevice } from "../firebaseUtils";
+import { auth } from "./firebaseConfig";
+import { sendMessageToDevice } from "./firebaseUtils";
 // import { AUTH_PASS, AUTH_USER } from "../pwa.config.json";
 import pwaOptions from "../pwa.config.json";
 
@@ -10,7 +10,7 @@ type PWAOptions = {
 };
 const { AUTH_USER, AUTH_PASS } = pwaOptions;
 
-export default async function ble(context: APIContext) {
+export default async function getData(context: APIContext) {
   const { url } = context;
   const checkUuid = url.searchParams.get("checkUuid") || "";
   const uuidParams = url.searchParams.get("uuid") || "";
@@ -43,6 +43,7 @@ export default async function ble(context: APIContext) {
       return token;
     } catch (error) {
       console.log("Error creating custom token:", error);
+      return new Response("Unauthorized", { status: 401 });
     }
   }
 

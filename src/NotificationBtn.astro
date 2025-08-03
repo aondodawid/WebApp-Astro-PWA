@@ -39,7 +39,7 @@ const {
 } = Astro.props as Props;
 
 if (responsiveStyles?.matchMedia) {
-  let mql = window.matchMedia(responsiveStyles.matchMedia);
+  const mql = window.matchMedia(responsiveStyles.matchMedia);
   if (mql.matches) {
     Object.assign(style, responsiveStyles.styles);
   }
@@ -56,11 +56,11 @@ const isNotification = (pwaOptions as PWAOptions)?.notification || false;
 }
 
 <script>
-  document.addEventListener("DOMContentLoaded", function (e) {
+  document.addEventListener("DOMContentLoaded", function () {
     if (!("Notification" in window)) return;
     if (Notification.permission === "default") {
       const btn = document.getElementById("notification-btn");
-      btn.style.opacity = 1;
+      btn && (btn.style.opacity = "1");
     }
   });
 </script>

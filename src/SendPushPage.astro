@@ -133,7 +133,7 @@ import Firebase from "./Firebase.astro";
         const auth = getAuth();
 
         try {
-          const userCredential = await signInWithCustomToken(auth, token);
+          await signInWithCustomToken(auth, token);
           const tokens = await fetchTokens();
           return tokens;
         } catch (error) {
@@ -162,31 +162,32 @@ import Firebase from "./Firebase.astro";
       }
       async function removeUuid() {
         const searchParams = "remove=true";
-        const data = await fetchData(url, searchParams, () => {}, "Unauthorized");
+        await fetchData(url, searchParams, () => {}, "Unauthorized");
       }
-      async function sendMessageToTokens(tokens, formData, url) {
+      async function sendMessageToTokens(tokens, formData, location) {
         const tokensStringJSON = JSON.stringify(tokens || []);
         formData.set("token", tokensStringJSON);
 
         const params = getFormDataString(formData);
-        const data = await fetchData(url, params, () => {}, "Failed to send push notification");
+        await fetchData(location, params, () => {}, "Failed to send push notification");
       }
 
-      async function getTokens(searchParams, url) {
+      async function getTokens(searchParams, location) {
         const getToken = await fetchData(
-          url,
+          location,
           `${searchParams}&isTokenList=true`,
           () => {},
           "Failed to get token"
         );
         const token = getToken?.token;
         const listOfTokens = await loginWithToken(token);
-        return listOfTokens.map((token) => token.token);
+        return listOfTokens.map((tokenFromList) => tokenFromList.token);
       }
       const submitForm = async (e, form, sessionUuid, errorMessage) => {
         e.preventDefault();
         const getForm = document.getElementById("pushForm");
         const formData = new FormData(getForm);
+        const messageContainer = document.getElementById("message");
 
         const tokenSource = formData.get("tokenSource");
         const token = formData.get("token");
