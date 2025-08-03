@@ -576,7 +576,7 @@ export default defineConfig({
   firebaseConfig: {
     apiKey: "<yor api key>",
     authDomain: "<authDomain key>",
-    projectId: "test-a5759",
+    projectId: "<your project id>",
     storageBucket: "<your storage bucket>",
     messagingSenderId: "<your messagingSenderId>",
     appId: "<your appId>",
