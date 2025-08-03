@@ -41,6 +41,13 @@ Your project will include the following files and folders:
 │   ├── PWASetupWindow.astro
 │   ├── types.ts
 │   ├── manifest_imgs/
+│   ├── Firebase.astro
+│   ├── LoginPanel.astro
+│   ├── NotificationBtn.astro
+│   ├── SendPushPage.astro
+│   ├── firebaseConfig.ts
+│   ├── firebaseUtils.ts
+│   ├── PushApiPage.ts
 │   └── pwa/
 │       ├── bundle-sw.mjs
 │       ├── index.ts
@@ -51,6 +58,9 @@ Your project will include the following files and folders:
 │       └── workbox.config.cjs
 │   └── view/
 │       ├── PopoverSupport.ts
+│       ├── js
+│       │   ├── popover.min.js
+│       │   ├── popover.min.js.map
 │       ├── components/
 │       │   ├── InstallationMessage.astro
 │       │   ├── InstallationPage.astro
@@ -61,6 +71,7 @@ Your project will include the following files and folders:
 │           ├── EventHandler.ts
 │           ├── PWAInstallPrompt.ts
 │           ├── PWASetup.ts
+│           ├── SWUtils.ts
 │           └── utilities.ts
 ├── pwa.config.json
 ├── package.json
