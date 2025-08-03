@@ -93,7 +93,7 @@ export type Config =
       firebaseConfig?: firebaseConfig;
       fcmServiceAccountKey?: fcmServiceAccountKey;
       vapidKey?: string;
-      AUTH_USER: string;
-      AUTH_PASS: string;
+      AUTH_USER?: string;
+      AUTH_PASS?: string;
     }
   | undefined;
