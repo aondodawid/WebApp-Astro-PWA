@@ -105,7 +105,33 @@ import Firebase from "./Firebase.astro";
         getAuth,
         signInWithCustomToken,
       } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-      import { fetchData, onError, getFormDataString } from "./utils";
+
+      async function fetchData(
+        url,
+        params = "",
+        onError = (data) => data,
+        errorMessage = "sm fetch data failed"
+      ) {
+        try {
+          const res = await fetch(url + params);
+          const data = await res.json();
+          if (!res.ok) throw new Error(errorMessage);
+          return data;
+        } catch (error) {
+          console.log(error);
+          onError();
+        }
+      }
+
+      function onError() {
+        window.location.href = `${window.location.origin}/login`;
+      }
+
+      function getFormDataString(formData) {
+        const values = [...formData.entries()];
+        const stringValues = values.map(([key, value]) => [key, String(value)]);
+        return new URLSearchParams(stringValues).toString();
+      }
 
       async function fetchTokens() {
         const querySnapshot = await getDocs(collection(window.db, "tokens"));

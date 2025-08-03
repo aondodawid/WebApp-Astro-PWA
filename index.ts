@@ -10,6 +10,7 @@ import LoginPanel from "./src/LoginPanel.astro";
 import Firebase from "./src/Firebase.astro";
 import PWABtn from "./src/PWABtn.astro";
 import PWA from "./src/PWA.astro";
+import getData from "./src/PushApiPage";
 import * as run from "./src/PushApiPage";
 
 export {
@@ -23,6 +24,7 @@ export {
   run,
   messaging,
   auth,
+  getData,
   signInWithCustomToken,
   sendMessageToDevice,
 };

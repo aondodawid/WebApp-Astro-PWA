@@ -8,7 +8,7 @@ type PWAOptions = {
   AUTH_PASS: string;
   AUTH_USER: string;
 };
-const { AUTH_USER, AUTH_PASS } = pwaOptions;
+const { AUTH_USER, AUTH_PASS } = pwaOptions as PWAOptions;
 
 export default async function getData(context: APIContext) {
   const { url } = context;
