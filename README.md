@@ -501,6 +501,7 @@ export default defineConfig({
       notification: true, // Enables web push notifications (default: false)
       saveSubscriptionPath: "path_to_server_for_save_subscription", // API endpoint to save push subscriptions
       applicationServerKey: "key_client_side", // VAPID public key for push notifications
+      notificationBtn: true, // Enables the button to request notification permission (default: false)
     }),
   ],
 });
@@ -514,15 +515,222 @@ export default defineConfig({
 - **saveSubscriptionPath**:
   The server endpoint where user push subscriptions will be sent and stored. This should point to your backend API that manages push subscribers.
 
+- **notificationBtn**:
+  Enables the button to request notification permission
 - **applicationServerKey**:
   The VAPID public key used for authenticating push messages on the client side. This key is required for subscribing users to push notifications.
-
-**Note:**
-Make sure your backend is set up to handle and store push subscriptions at the specified `saveSubscriptionPath`, and that you generate a valid VAPID key pair for secure push messaging.
+  **Note:**
+  Make sure your backend is set up to handle and store push subscriptions at the specified `saveSubscriptionPath`, and that you generate a valid VAPID key pair for secure push messaging.
 
 ---
 
-With these options enabled, your PWA will be ready to request notification permissions and manage web push subscriptions, allowing you to send real-time updates directly to your users. Thanks to this option, you can send simple web push notifications with an icon, body, title, and URL.
+### 📦 Notification Button Component
+
+```astro
+
+<NotificationBtn
+  style={{ color: "black" }}
+/>
+```
+
+| Prop                   | Type     | Description                                                   |
+| ---------------------- | -------- | ------------------------------------------------------------- |
+| `notificationBtn`      | `bool`   | Enables the notification permission button (default: `false`) |
+| `btnText`              | `string` | Text displayed on the button                                  |
+| `style`                | `object` | Inline styles for the button                                  |
+| `responsiveStyles`     | `object` | Media query-specific style overrides                          |
+| `variables.matchMedia` | `string` | Media query string (e.g., `(max-width: 768px)`)               |
+| `variables.styles`     | `object` | Style object for the media query                              |
+
+---
+
+## With these options enabled, your PWA will be ready to request notification permissions and manage web push subscriptions, allowing you to send real-time updates directly to your users. Thanks to this option, you can send simple web push notifications with an icon, body, title, and URL.
+
+---
+
+### 🔔 Web Push Notifications with Firebase and Astro (Full Integration Guide)
+
+☁️ Firebase Setup
+
+1. Create a Firebase Project
+   Go to the Firebase Console
+
+Click “Add project”
+
+Follow on-screen instructions to create a new Firebase project
+
+2. Enable Firestore
+   Go to Firestore Database in the Firebase console
+
+Click “Create Database”
+
+Choose “Start in production mode” or “Test mode”
+
+3. Copy Firebase Config to Astro
+   Copy your Firebase config object (firebaseConfig) from the Firebase console
+
+Add it to astro.config.mjs:
+
+```js
+export default defineConfig({
+  firebaseConfig: {
+    apiKey: "AIzaSyAAMnzJpYzszRBC5snYnxnnLWC84EP5d0w",
+    authDomain: "test-a5759.firebaseapp.com",
+    projectId: "test-a5759",
+    storageBucket: "test-a5759.firebasestorage.app",
+    messagingSenderId: "1057171896864",
+    appId: "1:1057171896864:web:20927436b09a227ce69a45",
+    measurementId: "G-VGR5FCJEGX",
+  },
+});
+```
+
+4. Firestore Security Rules
+   Go to Firestore → Rules and use the following rule set:
+
+```js
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.resource.data.keys().hasOnly(['token']) &&
+        request.resource.data.token is string &&
+        request.resource.data.token.size() <= 340;
+    }
+  }
+}
+```
+
+### 🔐 Web Push Certificates (VAPID Key)
+
+Generate a New VAPID Key
+Go to Firebase Console → Project Settings → Cloud Messaging
+
+Scroll to Web Push certificates
+
+Click "Generate Key Pair"
+
+Copy the Public Key and add it in astro.config.mjs:
+
+```js
+export default defineConfig({
+  vapidKey: "<your_generated_public_key>",
+});
+```
+
+### 🔑 Firebase Service Account Key
+
+Create and Use a Service Account Key
+In Firebase Console → Settings → Cloud Messaging
+
+Click “Manage service account”
+
+Go to the Google Cloud Console and create a key
+
+Download the generated JSON file
+
+Add the contents to astro.config.mjs:
+
+```js
+export default defineConfig({
+  fcmServiceAccountKey: {
+    type: "service_account",
+    project_id: "abcdefgh",
+    private_key_id: "...",
+    private_key: "-----BEGIN PRIVATE KEY-----\n....\n-----END PRIVATE KEY-----\n",
+    client_email: "...",
+    client_id: "...",
+    ...
+  }
+});
+```
+
+### 🚀 Astro Project Setup
+
+1. Install Node Adapter
+
+```bash
+npx astro add node
+```
+
+### 2. Configure Astro for Node Hosting
+
+In astro.config.mjs:
+
+```bash
+import node from "@astrojs/node";
+
+export default defineConfig({
+  adapter: node(),
+});
+
+```
+
+### 🔐 Auth Setup
+
+Set up authentication credentials for your push panel:
+
+```env
+AUTH_USER="<your_login>"
+AUTH_PASS="<your_password>"
+
+```
+
+### 📄 Page Setup
+
+Create sendpush.astro
+
+```astro
+---
+import { SendPushPage } from "webapp-astro-pwa";
+---
+
+<SendPushPage />
+
+```
+
+Create login.astro
+
+```astro
+---
+import { LoginPanel } from "webapp-astro-pwa";
+---
+
+<LoginPanel />
+```
+
+Create API Endpoint: pages/pushapi.ts
+
+```ts
+import getData from "webapp-astro-pwa";
+
+export const prerender = false;
+
+export async function GET(context: APIContext) {
+  return await getData(context);
+}
+```
+
+---
+
+### ✅ Testing Your Setup
+
+Visit http://<your_web_app>/sendpush
+
+Log in using AUTH_USER and AUTH_PASS
+
+You’ll be redirected to the push notification panel
+
+## Start sending Web Push notifications to users!
+
+### 📌 Summary
+
+✅ Firebase with Firestore and FCM
+✅ Astro setup with Node adapter
+✅ Web push button integration
+✅ Admin panel with login
+✅ Push notification panel ready
 
 ---
 

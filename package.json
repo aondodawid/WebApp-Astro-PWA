@@ -1,6 +1,6 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "license": "MIT",
   "type": "module",
   "exports": {
