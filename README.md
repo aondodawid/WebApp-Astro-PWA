@@ -574,13 +574,13 @@ Add it to astro.config.mjs:
 ```js
 export default defineConfig({
   firebaseConfig: {
-    apiKey: "AIzaSyAAMnzJpYzszRBC5snYnxnnLWC84EP5d0w",
-    authDomain: "test-a5759.firebaseapp.com",
+    apiKey: "<yor api key>",
+    authDomain: "<authDomain key>",
     projectId: "test-a5759",
-    storageBucket: "test-a5759.firebasestorage.app",
-    messagingSenderId: "1057171896864",
-    appId: "1:1057171896864:web:20927436b09a227ce69a45",
-    measurementId: "G-VGR5FCJEGX",
+    storageBucket: "<your storage bucket>",
+    messagingSenderId: "<your messagingSenderId>",
+    appId: "<your appId>",
+    measurementId: "<you measurementId>",
   },
 });
 ```
