@@ -17,7 +17,7 @@ const DISABLE_DEV_LOGS = SETTINGS.disableDevLogs;
 const { scripts } = SETTINGS;
 const { notification } = SETTINGS;
 const { saveSubscriptionPath } = SETTINGS;
-const { applicationServerKey } = SETTINGS;
+let { applicationServerKey } = SETTINGS;
 const { isFirebaseMessaging } = SETTINGS;
 
 /**
@@ -62,18 +62,32 @@ function addScriptsToSW(scripts) {
    */
   const saveSubscription = async (saveSubscriptionPath, body) => {
     const response = await fetch(saveSubscriptionPath, body);
-    return response.json();
+    const data = await response.json();
+    return data;
   };
-
+  async function fetchData(url = "", params = "") {
+    try {
+      const res = await fetch(url + params);
+      if (!res.ok) throw new Error("sm fetch data failed");
+      const data = await res.text();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   /**
    * Handles the subscription process for push notifications.
    */
   const handleSubscription = async () => {
     if (Notification.permission !== "granted") return;
+    if (applicationServerKey.includes("http")) {
+      applicationServerKey = (await fetchData(applicationServerKey)) || applicationServerKey;
+    }
     const subscription = await self.registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
     });
+
     const body = {
       method: "post",
       headers: { "Content-type": "application/json" },
@@ -101,7 +115,7 @@ function addScriptsToSW(scripts) {
     };
     if (event && event?.data) {
       try {
-        notifications = event.data.json().notification;
+        notifications = event.data.json();
       } catch {
         // fallback if not JSON
         notifications.body = event.data.text();
@@ -129,6 +143,13 @@ function addScriptsToSW(scripts) {
   function getNotificationAcceptMessage(event) {
     getNotification();
     if (isFirebaseMessaging) return;
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+    if (!("PushManager" in window)) {
+      return;
+    }
+    if (Notification.permission !== "granted") return;
     if (event.data && event.data.action === "subscribeWEBAppPWA") {
       handleSubscription();
     }
@@ -152,7 +173,9 @@ function addScriptsToSW(scripts) {
     self.addEventListener("push", getNotification);
     self.addEventListener("notificationclick", handleNitificationClick);
     if (isFirebaseMessaging) return;
-    self.addEventListener("activate", handleSubscription);
+    self.addEventListener("activate", () => {
+      handleSubscription();
+    });
   }
 
   if (notification) runNotificationsEventsListeners();

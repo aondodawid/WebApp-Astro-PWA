@@ -1,6 +1,8 @@
 {
   "name": "webapp-astro-pwa",
-  "version": "0.3.3",
+  "description": "Astro component library for adding Progressive Web App (PWA). Includes a web push management panel seamlessly integrated with Firebase.",
+  "homepage": "https://github.com/aondodawid/WebApp-Astro-PWA",
+  "version": "0.3.5",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -19,6 +21,7 @@
     "pwa.config.json"
   ],
   "keywords": [
+    "withastro",
     "astro",
     "astro-component",
     "astro-integration",
