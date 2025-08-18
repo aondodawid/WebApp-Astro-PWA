@@ -316,16 +316,7 @@ import Firebase from "./Firebase.astro";
 </html>
 
 <style>
-  html {
-    box-sizing: border-box;
-  }
-
-  *,
-  *:before,
-  *:after {
-    box-sizing: inherit;
-  }
-  body {
+  .pwa-wrapper {
     background: linear-gradient(120deg, #18122b 0%, #443c68 50%, #635985 100%);
     min-height: 100vh;
     color: #f3f3f3;
@@ -365,7 +356,7 @@ import Firebase from "./Firebase.astro";
     scrollbar-width: thin;
     scrollbar-color: #635985 #2d2546;
   }
-  .container {
+  .pwa-wrapper .container {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
@@ -379,12 +370,12 @@ import Firebase from "./Firebase.astro";
     margin-bottom: 2rem;
   }
 
-  h1,
-  h2 {
+  .pwa-wrapper h1,
+  .pwa-wrapper h2 {
     color: #e0e0ff;
     margin: 0;
   }
-  h1 {
+  .pwa-wrapper h1 {
     width: 100%;
   }
   div.radio-group {

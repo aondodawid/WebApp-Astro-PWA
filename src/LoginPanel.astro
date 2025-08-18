@@ -41,26 +41,28 @@
     <title>Admin Login</title>
   </head>
   <body>
-    <div class="container">
-      <h1>Admin Login</h1>
-      <form class="astro-form" id="login-form">
-        <div class="astro-form-group">
-          <label for="user">Login</label>
-          <input id="user" name="user" type="text" placeholder="Login" required />
-        </div>
-        <div class="astro-form-group">
-          <label for="pass">Password</label>
-          <input id="pass" name="password" type="password" placeholder="Password" required />
-        </div>
-        <button type="submit" class="astro-btn">Log In</button>
-        <div id="message"></div>
-      </form>
+    <div class="pwa-wrapper">
+      <div class="container">
+        <h1>Admin Login</h1>
+        <form class="astro-form" id="login-form">
+          <div class="astro-form-group">
+            <label for="user">Login</label>
+            <input id="user" name="user" type="text" placeholder="Login" required />
+          </div>
+          <div class="astro-form-group">
+            <label for="pass">Password</label>
+            <input id="pass" name="password" type="password" placeholder="Password" required />
+          </div>
+          <button type="submit" class="astro-btn">Log In</button>
+          <div id="message"></div>
+        </form>
+      </div>
     </div>
   </body>
 </html>
 
 <style>
-  body {
+  .pwa-wrapper {
     background: linear-gradient(120deg, #18122b 0%, #443c68 50%, #635985 100%);
     min-height: 100vh;
     color: #f3f3f3;
@@ -78,7 +80,7 @@
     padding: 1rem;
   }
 
-  h1 {
+  .pwa-wrapper h1 {
     text-align: center;
     margin-bottom: 2rem;
     color: #e0e0ff;
