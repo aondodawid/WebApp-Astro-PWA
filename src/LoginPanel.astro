@@ -7,26 +7,25 @@
   ) {
     try {
       const res = await fetch(url + params);
-      const data = await res.json();
       if (!res.ok) throw new Error(errorMessage);
-      return data;
+      if (!res.ok) throw new Error(errorMessage);
+      return await res.json();
     } catch (error) {
       console.log(error);
       onError();
     }
   }
-
+  function renderErrorMessage(messageContainer: HTMLElement | null) {
+    if (!messageContainer) return;
+    messageContainer.style.color = "red";
+    messageContainer.innerText = "Error sending push notification";
+  }
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form") as HTMLFormElement;
     const messageContainer = document.getElementById("message");
 
     if (!form) return;
 
-    function renderErrorMessage() {
-      if (!messageContainer) return;
-      messageContainer.style.color = "red";
-      messageContainer.innerText = "Error sending push notification";
-    }
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -35,7 +34,7 @@
       const stringValues = values.map(([key, value]) => [key, String(value)]);
       const searchParams = new URLSearchParams(stringValues).toString();
       const url = `${window.location.origin}/pushapi?`;
-      const data = await fetchData(url, searchParams, renderErrorMessage);
+      const data = await fetchData(url, searchParams, () => renderErrorMessage(messageContainer));
       if (data?.ok) localStorage.setItem("pwauuid", data.uuid);
       localStorage.setItem("pwauuid", data.uuid);
       const expirationTime = Date.now() + 55 * 60 * 1000; // 1 hour

@@ -3,7 +3,7 @@ import pwaSettings from "../../../pwa.config.json";
 import type { IMetaItem, IIconItem } from "../../types";
 ---
 
-<link rel="manifest" href="./manifest.json" />
+<link crossorigin="use-credentials" rel="manifest" href="./manifest.json" />
 {
   Array.isArray(pwaSettings.meta) &&
     pwaSettings.meta.map((el: IMetaItem) => <meta name={el.name} content={el.content} />)
